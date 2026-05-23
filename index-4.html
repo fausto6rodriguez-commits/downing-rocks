@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quarterly Rocks Workbook · Downing Capital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F6F3;--surf:#FFFFFF;--surf2:#F2F1EE;--surf3:#E8E7E3;
+  --bdr:#E0DED8;--bdr2:#C8C6BF;
+  --tx:#1A1916;--tx2:#6B6860;--tx3:#A8A69E;
+  --blue:#185FA5;--blue-bg:#EBF3FC;--blue-tx:#0C447C;
+  --green:#3B6D11;--green-bg:#EAF3DE;
+  --amber:#854F0B;--amber-bg:#FAEEDA;
+  --red:#A32D2D;--red-bg:#FCEBEB;
+  --purple:#534AB7;--purple-bg:#EEEDFE;--purple-tx:#3C3489;
+  --teal:#0F6E56;--teal-bg:#E1F5EE;--teal-tx:#085041;
+  --r:8px;--rlg:12px;
+  --font:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace;
+}
+html,body{height:100%;background:var(--bg);color:var(--tx);font-family:var(--font);font-size:14px;line-height:1.5}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:224px;flex-shrink:0;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column;overflow:hidden}
+.sb-top{padding:16px 14px 12px;border-bottom:1px solid var(--bdr);flex-shrink:0}
+.sb-logo-text{font-size:15px;font-weight:500;color:#1B2A4A;letter-spacing:.01em;margin-bottom:6px;}
+.sb-q{font-size:11px;color:var(--tx2)}
+.sb-nav{flex:1;overflow-y:auto;padding:8px 0}
+.nav-sec{font-size:10px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--tx3);padding:10px 14px 3px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 14px;cursor:pointer;color:var(--tx2);font-size:13px;user-select:none}
+.nav-item:hover{background:var(--surf2);color:var(--tx)}
+.nav-item.active{background:var(--blue-bg);color:var(--blue);font-weight:500}
+.nav-item svg{flex-shrink:0}
+.sb-foot{padding:10px 12px;border-top:1px solid var(--bdr);flex-shrink:0}
+.btn-set{display:flex;align-items:center;gap:7px;width:100%;padding:7px 10px;background:transparent;border:1px solid var(--bdr);border-radius:var(--r);cursor:pointer;color:var(--tx2);font-size:12px;font-family:var(--font)}
+.btn-set:hover{background:var(--surf2);color:var(--tx)}
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.topbar{padding:14px 24px;border-bottom:1px solid var(--bdr);background:var(--surf);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.pg-title{font-size:15px;font-weight:500}
+.pg-sub{font-size:12px;color:var(--tx2);margin-top:1px}
+.content{flex:1;overflow-y:auto;padding:22px 24px}
+.panel{display:none}.panel.active{display:block}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r);font-family:var(--font);font-size:12px;font-weight:500;cursor:pointer;border:1px solid transparent}
+.btn-ghost{background:var(--surf);border-color:var(--bdr2);color:var(--tx2)}.btn-ghost:hover{background:var(--surf2);color:var(--tx)}
+.btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{opacity:.9}
+.btn-del{background:transparent;border:none;color:var(--tx3);padding:3px 4px;cursor:pointer;display:inline-flex;align-items:center;border-radius:4px;font-size:13px}.btn-del:hover{color:var(--red);background:var(--red-bg)}
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.stat-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:12px 14px}
+.stat-lbl{font-size:10px;color:var(--tx3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.05em}
+.stat-val{font-size:22px;font-weight:300}
+.stat-val.g{color:var(--green)}.stat-val.a{color:var(--amber)}.stat-val.r{color:var(--red)}.stat-val.b{color:var(--blue)}
+.pill{display:inline-flex;align-items:center;justify-content:center;font-size:11px;padding:0 8px;height:24px;min-width:82px;border-radius:20px;font-weight:500;white-space:nowrap}
+.p-ns{background:var(--surf2);color:var(--tx2)}.p-up{background:var(--red-bg);color:var(--red-tx);}.p-ot{background:var(--green-bg);color:#27500A}.p-ar{background:var(--amber-bg);color:#633806}.p-dn{background:var(--blue-bg);color:var(--blue-tx)}.p-dim{background:var(--purple-bg);color:var(--purple-tx);font-size:10px}.p-lead{background:var(--purple-bg);color:var(--purple-tx)}.p-lag{background:var(--teal-bg);color:var(--teal-tx)}
+.score-chip{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:20px;background:var(--surf2);color:var(--tx2)}
+.rock-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rlg);margin-bottom:8px;overflow:hidden}
+.rock-hdr{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer}
+.rock-hdr:hover{background:var(--surf2)}
+.rock-num{font-size:11px;color:var(--tx3);min-width:16px;font-family:var(--mono)}
+.rock-info{flex:1;min-width:0}
+.rock-title{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rock-card.expanded .rock-title{white-space:normal;overflow:visible;text-overflow:unset}
+.rock-meta{font-size:11px;color:var(--tx3);margin-top:2px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rock-right{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.rock-right-status{display:flex;gap:6px;align-items:center;flex-shrink:0;margin-left:2px}
+.score-rock-inp{width:68px;font-size:11px;padding:3px 6px;height:24px;border:1px solid var(--bdr);border-radius:20px;background:var(--surf2);color:var(--tx);font-family:var(--mono);text-align:center;cursor:text;}
+.score-rock-inp:focus{border-color:var(--blue);outline:none;background:var(--surf);}
+.score-rock-inp::placeholder{color:var(--tx3);}
+.chevron{color:var(--tx3);transition:transform .2s;flex-shrink:0}.chevron.open{transform:rotate(180deg)}
+.sr-wrap{border-top:1px solid var(--bdr)}
+.sr-tabs{display:flex;background:var(--surf2);border-bottom:1px solid var(--bdr);padding:0 14px}
+.sr-tab{font-size:11px;padding:7px 12px;cursor:pointer;color:var(--tx2);background:transparent;border:none;border-bottom:2px solid transparent;font-family:var(--font);margin-bottom:-1px}.sr-tab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}.sr-tab:hover:not(.active){color:var(--tx)}
+.sr-body{padding:0 14px 12px}
+.sr-hdr,.sr-row{padding:8px 0}.sr-row{min-height:36px}
+.sr-hdr{border-bottom:1px solid var(--bdr2)}
+.sr-row{border-bottom:1px solid var(--bdr)}.sr-row:last-of-type{border-bottom:none}
+.col{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;font-weight:500}
+.sr-idx{font-size:11px;color:var(--tx3);font-family:var(--mono);text-align:center}
+.ed{outline:none;cursor:text;padding:2px 4px;border-radius:4px;font-size:12px;word-break:break-word;}.ed:hover{background:var(--surf2)}.ed:focus{background:var(--surf2);box-shadow:0 0 0 1.5px var(--blue);white-space:normal;overflow:visible}
+.ctrl{font-size:12px;padding:3px 6px;border:1px solid var(--bdr);border-radius:var(--r);background:var(--surf);color:var(--tx);font-family:var(--font)}.ctrl:focus{border-color:var(--blue);outline:none}
+.score-inp{width:58px;text-align:center;font-family:var(--mono)}
+.add-sr-row{display:flex;align-items:center;gap:8px;padding:8px 0 2px}
+.add-sr-grid{display:grid;grid-template-columns:1fr 110px 110px 110px 110px;gap:6px;flex:1}
+.add-sr-grid input,.add-sr-grid select{font-size:12px;padding:5px 7px;border:1px solid var(--bdr);border-radius:var(--r);background:var(--surf);color:var(--tx);font-family:var(--font)}.add-sr-grid input:focus,.add-sr-grid select:focus{border-color:var(--blue);outline:none}
+.grade-note{font-size:11px;color:var(--tx3);margin-top:8px;padding-top:8px;border-top:1px solid var(--bdr)}
+.ms-wrap{overflow-x:auto}
+.ms-table{width:100%;border-collapse:collapse;font-size:12px;min-width:800px}
+.ms-table th{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;padding:6px 8px;border-bottom:1px solid var(--bdr2);font-weight:500;white-space:nowrap;text-align:left}
+.ms-table td{padding:5px 6px;border-bottom:1px solid var(--bdr);vertical-align:top}.ms-table tbody tr:last-child td{border-bottom:none}
+.ms-sel{font-size:11px;padding:2px 4px;border:1px solid var(--bdr);border-radius:4px;background:var(--surf);color:var(--tx);font-family:var(--font);width:100%}.ms-sel:focus{border-color:var(--blue);outline:none}
+.ms-note{width:100%;font-size:11px;padding:2px 4px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--tx);font-family:var(--font);margin-top:2px}.ms-note:hover{border-color:var(--bdr);background:var(--surf)}.ms-note:focus{border-color:var(--blue);background:var(--surf);outline:none}
+.add-form-wrap{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rlg);padding:14px;margin-bottom:12px}
+.fg{display:flex;flex-direction:column;gap:4px}.fl{font-size:11px;color:var(--tx2);font-weight:500}
+.fc{font-size:13px;padding:7px 10px;border:1px solid var(--bdr);border-radius:var(--r);background:var(--surf);color:var(--tx);font-family:var(--font)}.fc:focus{border-color:var(--blue);outline:none}
+textarea.fc{resize:vertical;min-height:54px}
+.fr{display:flex;gap:10px}.form-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+.sec-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sec-title{font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--tx3)}
+.ns-wrap{overflow-x:auto}
+.ns-table{border-collapse:collapse;font-size:12px;min-width:900px;width:100%}
+.ns-table th{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;padding:7px 8px;text-align:left;border-bottom:1px solid var(--bdr2);font-weight:500;white-space:nowrap}
+.ns-table td{padding:6px 8px;border-bottom:1px solid var(--bdr);vertical-align:middle}.ns-table tbody tr:last-child td{border-bottom:none}
+.ns-wk{width:36px;font-size:11px;padding:2px 3px;text-align:center;border:1px solid var(--bdr);border-radius:4px;background:var(--surf);color:var(--tx);font-family:var(--mono);-webkit-appearance:none;-moz-appearance:textfield;appearance:none}.ns-wk:focus{border-color:var(--blue);outline:none}.ns-wk::-webkit-outer-spin-button,.ns-wk::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.ns-pos{color:var(--green);font-weight:500;font-family:var(--mono)}.ns-neg{color:var(--red);font-weight:500;font-family:var(--mono)}
+.log-table{width:100%;border-collapse:collapse;font-size:12px}
+.log-table th{font-size:10px;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;padding:7px 8px;text-align:left;border-bottom:1px solid var(--bdr2);font-weight:500}
+.log-table td{padding:8px;border-bottom:1px solid var(--bdr);vertical-align:top}.log-table tbody tr:last-child td{border-bottom:none}.log-table tbody tr:hover td{background:var(--surf2)}
+.add-log-form{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rlg);padding:14px;margin-bottom:16px}
+.count-bar{font-size:12px;color:var(--tx2);margin-bottom:12px}.count-bar strong{color:var(--tx);font-weight:500}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.dash-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rlg);overflow:hidden}
+.dash-card-hdr{padding:12px 14px;border-bottom:1px solid var(--bdr);background:var(--surf2)}
+.dash-card-name{font-size:13px;font-weight:500}.dash-card-meta{font-size:11px;color:var(--tx2);margin-top:1px}
+.dash-rock-row{display:flex;align-items:flex-start;gap:8px;padding:8px 14px;border-bottom:1px solid var(--bdr);font-size:12px}.dash-rock-row:last-child{border-bottom:none}
+.dash-rock-info{flex:1;min-width:0}.dash-rock-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}.dash-rock-parent{font-size:11px;color:var(--tx3);margin-top:1px}
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px}.filter-bar select{font-size:12px;padding:5px 8px;border:1px solid var(--bdr);border-radius:var(--r);background:var(--surf);color:var(--tx);font-family:var(--font)}
+.empty{text-align:center;padding:32px;color:var(--tx3);font-size:13px}.empty svg{display:block;margin:0 auto 8px;opacity:.4}
+.impact-h{background:var(--amber-bg);color:#633806}.impact-m{background:var(--blue-bg);color:var(--blue-tx)}.impact-l{background:var(--surf2);color:var(--tx2)}.impact-c{background:var(--red-bg);color:#791F1F}
+.st-sug{background:var(--purple-bg);color:var(--purple-tx)}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:100;align-items:center;justify-content:center}.modal-bg.open{display:flex}
+.modal{background:var(--surf);border:1px solid var(--bdr);border-radius:16px;padding:24px;width:320px}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:16px}.modal .fg{margin-bottom:12px}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:10px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">
+  <div class="sb-top">
+    <div class="sb-logo-text">Downing Capital</div>
+    <div class="sb-q" id="sb-quarter">Q2 2026</div>
+  </div>
+  <div class="sb-nav">
+    <div class="nav-sec">Metrics</div>
+    <div class="nav-item active" data-tab="northstar" onclick="switchTab('northstar',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.75l-6.172 3.245 1.179-6.873-5-4.867 6.9-1 3.086-6.253 3.086 6.253 6.9 1-5 4.867 1.179 6.873z"/></svg> North Star</div>
+
+    <div class="nav-sec">Rocks</div>
+    <div class="nav-item" data-tab="allrocks" onclick="switchTab('allrocks',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> All Rocks</div>
+
+    <div class="nav-item" data-tab="ideation" onclick="switchTab('ideation',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h1m8-9v1m8 8h1m-15.4-6.4.7.7m12.1-.7-.7.7"/><path d="M9 16a5 5 0 1 1 6 0 3.5 3.5 0 0 0-1 3 2 2 0 0 1-4 0 3.5 3.5 0 0 0-1-3"/><line x1="9.7" y1="17" x2="14.3" y2="17"/></svg> Ideation Rocks</div>
+
+    <div class="nav-item" data-tab="talent" onclick="switchTab('talent',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.85"/></svg> Talent Rocks</div>
+
+    <div class="nav-item" data-tab="build" onclick="switchTab('build',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="22" x2="12" y2="11"/><path d="M20 22V11L12 2 4 11v11"/><line x1="4" y1="14" x2="20" y2="14"/><path d="M8 22v-4h8v4"/></svg> Build Rocks</div>
+
+    <div class="nav-item" data-tab="ops" onclick="switchTab('ops',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg> Operations Rocks</div>
+
+    <div class="nav-item" data-tab="ceo" onclick="switchTab('ceo',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h5a7 7 0 0 1 0 14H5z"/><path d="M12 8l3 3.5-3 3.5"/></svg> Office CEO Rocks</div>
+
+    <div class="nav-sec">Dashboards</div>
+    <div class="nav-item" data-tab="dash-ind" onclick="switchTab('dash-ind',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0-8 0"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg> By Individual</div>
+
+    <div class="nav-sec">Operations</div>
+    <div class="nav-item" data-tab="better" onclick="switchTab('better',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h1m8-9v1m8 8h1m-15.4-6.4.7.7m12.1-.7-.7.7"/><path d="M9 16a5 5 0 1 1 6 0 3.5 3.5 0 0 0-1 3 2 2 0 0 1-4 0 3.5 3.5 0 0 0-1-3"/><line x1="9.7" y1="17" x2="14.3" y2="17"/></svg> 1% Better</div>
+
+    <div class="nav-item" data-tab="blockers" onclick="switchTab('blockers',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636-2.87l-8.106-13.536a1.914 1.914 0 0 0-3.274 0z"/><path d="M12 16h.01"/></svg> Blockers</div>
+
+    <div class="nav-item" data-tab="support" onclick="switchTab('support',this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13v-7.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M11 5.5v-2a1.5 1.5 0 1 1 3 0v8.5"/><path d="M14 5.5a1.5 1.5 0 0 1 3 0v6.5"/><path d="M17 7.5a1.5 1.5 0 0 1 3 0v8.5a6 6 0 0 1-6 6h-2a6 6 0 0 1-5.208-3l-3.286-5.728a1.5 1.5 0 0 1 .536-2.022 1.867 1.867 0 0 1 2.28.28l1.47 1.47"/></svg> Support</div>
+
+  </div>
+  <div class="sb-foot">
+    <button class="btn-set" onclick="openModal()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066-2.573c-.94-1.543.826-3.31 2.37-2.37c1 .608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3"/></svg> Settings</button>
+  </div>
+</div>
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="pg-title" id="pg-title">North Star Metrics</div>
+      <div class="pg-sub" id="pg-sub">Leading and lagging indicators — tracked weekly</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px"><span id="sync-status" style="font-size:11px;transition:color .3s"></span><div id="topbar-act" style="display:flex;gap:8px">
+      <button class="btn btn-ghost" onclick="addNSRow()">+ Add metric</button>
+    </div>
+  </div></div>
+  <div class="content">
+
+    <div id="panel-northstar" class="panel active">
+      <div class="ns-wrap"><table class="ns-table" id="ns-table"></table></div>
+      <div id="ns-note" style="font-size:11px;color:var(--tx3);margin-top:10px;padding-top:8px;border-top:1px solid var(--bdr)"></div>
+    </div>
+
+    <div id="panel-allrocks" class="panel">
+      <div class="stat-row" id="ar-stats"></div>
+      <div id="ar-content"></div>
+    </div>
+
+    
+    <div id="panel-ideation" class="panel">
+      <div class="stat-row" id="ideation-stats"></div>
+      <div class="sec-bar"><span class="sec-title">Ideation Rocks</span><button class="btn btn-ghost" onclick="showAddRock('ideation')">+ Add Rock</button></div>
+      <div id="ideation-add" style="display:none"></div>
+      <div id="ideation-list"></div>
+    </div>
+    
+    <div id="panel-talent" class="panel">
+      <div class="stat-row" id="talent-stats"></div>
+      <div class="sec-bar"><span class="sec-title">Talent Rocks</span><button class="btn btn-ghost" onclick="showAddRock('talent')">+ Add Rock</button></div>
+      <div id="talent-add" style="display:none"></div>
+      <div id="talent-list"></div>
+    </div>
+    
+    <div id="panel-build" class="panel">
+      <div class="stat-row" id="build-stats"></div>
+      <div class="sec-bar"><span class="sec-title">Build Rocks</span><button class="btn btn-ghost" onclick="showAddRock('build')">+ Add Rock</button></div>
+      <div id="build-add" style="display:none"></div>
+      <div id="build-list"></div>
+    </div>
+    
+    <div id="panel-ops" class="panel">
+      <div class="stat-row" id="ops-stats"></div>
+      <div class="sec-bar"><span class="sec-title">Operations Rocks</span><button class="btn btn-ghost" onclick="showAddRock('ops')">+ Add Rock</button></div>
+      <div id="ops-add" style="display:none"></div>
+      <div id="ops-list"></div>
+    </div>
+    
+    <div id="panel-ceo" class="panel">
+      <div class="stat-row" id="ceo-stats"></div>
+      <div class="sec-bar"><span class="sec-title">Office CEO Rocks</span><button class="btn btn-ghost" onclick="showAddRock('ceo')">+ Add Rock</button></div>
+      <div id="ceo-add" style="display:none"></div>
+      <div id="ceo-list"></div>
+    </div>
+
+    <div id="panel-dash-ind" class="panel">
+      <div class="filter-bar"><span style="font-size:12px;color:var(--tx2)">Filter:</span><select id="filt-person" onchange="renderDashInd()"><option value="">All individuals</option></select></div>
+      <div id="dash-ind-content"></div>
+    </div>      <div id="dash-dept-content"></div>
+    </div>
+
+    <div id="panel-better" class="panel">
+      <div class="add-log-form">
+        <div class="fr" style="margin-bottom:8px">
+          <div class="fg" style="flex:1"><label class="fl">Area</label><input class="fc" style="font-size:12px" id="b-area" placeholder="Initiative / Area"></div>
+          <div class="fg" style="width:140px"><label class="fl">By whom</label><input class="fc" style="font-size:12px" id="b-who" placeholder="Name"></div>
+        </div>
+        <div class="fg" style="margin-bottom:8px"><label class="fl">What can be done better</label><textarea class="fc" style="font-size:12px" id="b-what" placeholder="Describe the improvement..."></textarea></div>
+        <div class="fr">
+          <div class="fg" style="flex:1"><label class="fl">Impact</label><textarea class="fc" style="font-size:12px;min-height:40px" id="b-impact" placeholder="What impact?"></textarea></div>
+          <div class="fg" style="width:120px"><label class="fl">Level</label><select class="fc" style="font-size:12px" id="b-level"><option>High</option><option>Medium</option><option>Low</option><option>Critical</option></select></div>
+          <div class="fg" style="width:130px"><label class="fl">Status</label><select class="fc" style="font-size:12px" id="b-status"><option>Suggested</option><option>In Progress</option><option>Implemented</option></select></div>
+        </div>
+        <div class="form-actions"><button class="btn btn-primary" onclick="addBetter()">Log idea</button></div>
+      </div>
+      <div class="count-bar" id="better-count"></div>
+      <table class="log-table"><thead><tr><th>Area</th><th>What</th><th>Impact</th><th style="width:70px">Level</th><th style="width:90px">By</th><th style="width:110px">Status</th><th style="width:32px"></th></tr></thead><tbody id="better-body"></tbody></table>
+    </div>
+
+    <div id="panel-blockers" class="panel">
+      <div class="add-log-form">
+        <div class="fr" style="margin-bottom:8px">
+          <div class="fg" style="flex:1"><label class="fl">Blocked Rock</label><input class="fc" style="font-size:12px" id="bl-rock" placeholder="Which Rock?"></div>
+          <div class="fg" style="width:130px"><label class="fl">By whom</label><input class="fc" style="font-size:12px" id="bl-who" placeholder="Name"></div>
+          <div class="fg" style="width:150px"><label class="fl">Support from</label><input class="fc" style="font-size:12px" id="bl-from" placeholder="Who can unblock?"></div>
+        </div>
+        <div class="fr" style="margin-bottom:8px">
+          <div class="fg"><label class="fl">Description</label><textarea class="fc" style="font-size:12px" id="bl-desc" placeholder="What is stopping progress?"></textarea></div>
+          <div class="fg"><label class="fl">Support needed</label><textarea class="fc" style="font-size:12px" id="bl-support" placeholder="What help is needed?"></textarea></div>
+        </div>
+        <div class="fr">
+          <div class="fg" style="width:140px"><label class="fl">Status</label><select class="fc" style="font-size:12px" id="bl-status"><option>Blocked</option><option>In Progress</option><option>Resolved</option></select></div>
+          <div class="fg" style="flex:1"><label class="fl">Notes</label><input class="fc" style="font-size:12px" id="bl-notes" placeholder="Optional"></div>
+        </div>
+        <div class="form-actions"><button class="btn btn-primary" onclick="addBlocker()">Log blocker</button></div>
+      </div>
+      <table class="log-table"><thead><tr><th>Rock</th><th>Description</th><th>Support needed</th><th style="width:110px">From</th><th style="width:90px">By</th><th style="width:110px">Status</th><th style="width:32px"></th></tr></thead><tbody id="blockers-body"></tbody></table>
+    </div>
+
+    <div id="panel-support" class="panel">
+      <div class="add-log-form">
+        <div class="fr" style="margin-bottom:8px">
+          <div class="fg" style="width:120px"><label class="fl">Type</label><select class="fc" style="font-size:12px" id="sp-type"><option>Intro</option><option>Decision</option><option>Budget</option><option>Resource</option><option>Other</option></select></div>
+          <div class="fg" style="flex:1"><label class="fl">Initiative</label><input class="fc" style="font-size:12px" id="sp-init" placeholder="What is needed?"></div>
+          <div class="fg" style="width:130px"><label class="fl">Requested by</label><input class="fc" style="font-size:12px" id="sp-by" placeholder="Name"></div>
+          <div class="fg" style="width:140px"><label class="fl">Supported by</label><input class="fc" style="font-size:12px" id="sp-from" placeholder="Name / role"></div>
+        </div>
+        <div class="fr">
+          <div class="fg" style="flex:1"><label class="fl">Description</label><textarea class="fc" style="font-size:12px" id="sp-desc" placeholder="What is needed and why?"></textarea></div>
+          <div class="fg" style="width:120px"><label class="fl">Timeline</label><input class="fc" style="font-size:12px" id="sp-time" placeholder="e.g. 1 week"></div>
+          <div class="fg" style="width:120px"><label class="fl">Status</label><select class="fc" style="font-size:12px" id="sp-status"><option>Needed</option><option>In Progress</option><option>Resolved</option></select></div>
+        </div>
+        <div class="form-actions"><button class="btn btn-primary" onclick="addSupport()">Log request</button></div>
+      </div>
+      <table class="log-table"><thead><tr><th style="width:80px">Type</th><th>Initiative</th><th>Description</th><th style="width:110px">From</th><th style="width:90px">By</th><th style="width:80px">Timeline</th><th style="width:110px">Status</th><th style="width:32px"></th></tr></thead><tbody id="support-body"></tbody></table>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h3>Settings</h3>
+    <div class="fg"><label class="fl">Quarter</label><input class="fc" id="set-q" placeholder="e.g. Q2 2026"></div>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSettings()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+var ROCK_TYPES = ['ideation','talent','build','ops','ceo'];
+var ROCK_LABELS = {ideation:'Ideation Rocks',talent:'Talent Rocks',build:'Build Rocks',ops:'Operations Rocks',ceo:'Office CEO Rocks'};
+var DIMS = ['Revenue & Growth','Customer Success','Product & Innovation','Team & Culture','Operations & Finance'];
+var PORTCOS = ['All PortCo','Wellnest','Portoro','Bloomwell','Immersiv','Ownershift','Cedar Brands','Calibright','MARO'];
+var STATUSES = ['Not Started','On Track','At Risk','Done'];
+var MS_OPTS = ['--','Planned','Done','At Risk'];
+var WEEK_DATES = ['03.04','10.04','17.04','24.04','01.05','08.05','15.05','22.05','29.05','05.06','12.06','19.06'];
+var PAGE_META = {
+  northstar:  {title:'North Star Metrics',        sub:'Leading and lagging indicators — tracked weekly'},
+  allrocks:   {title:'All Rocks',                 sub:'Every rock across all pods'},
+  ideation:   {title:'Ideation Rocks',            sub:'Ideation pod quarterly rocks'},
+  talent:     {title:'Talent Rocks',              sub:'Talent pod quarterly rocks'},
+  build:      {title:'Build Rocks',              sub:'Build pod quarterly rocks'},
+  ops:        {title:'Operations Rocks',          sub:'Operations pod quarterly rocks'},
+  ceo:        {title:'Office CEO Rocks',          sub:'CEO office quarterly rocks'},
+  'dash-ind': {title:'Individual Dashboard',      sub:'All rocks assigned to each person'},
+  better:     {title:'1% Better',                 sub:'Small improvements compound to 37x by year end'},
+  blockers:   {title:'Blockers',                  sub:'Log anything stopping a Rock'},
+  support:    {title:'Support Needed',            sub:'What does the team need from leadership?'}
+};
+
+var D = {
+  quarter: '',
+  ns: [
+    {type:'LEADING', metric:'[e.g. Qualified leads / week]', owner:'[Owner]', target:'', weeks:['','','','','','','','','','','',''], status:'On Track'},
+    {type:'LAGGING', metric:'[e.g. New revenue closed ($)]', owner:'[Owner]', target:'', weeks:['','','','','','','','','','','',''], status:'On Track'},
+    {type:'LAGGING', metric:'[e.g. Customer NPS]',           owner:'[Owner]', target:'', weeks:['','','','','','','','','','','',''], status:'On Track'}
+  ],
+  ideationRocks:[], talentRocks:[], buildRocks:[], opsRocks:[], ceoRocks:[],
+  better:[], blockers:[], support:[],
+  expanded:{}, srTab:{}, arCollapsed:{}, indCollapsed:{}, indRockCollapsed:{}, activeFilter:{}
+};
+
+var STORE = 'dc_rocks_v2';
+var DATA_VERSION = 3;
+var SB_URL = 'https://whchshmrmspsnkwinhgd.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndoY2hzaG1ybXNwc25rd2luaGdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODM1NTYsImV4cCI6MjA5NTA1OTU1Nn0.GkRDyiMyAmVW-o_raylWj06JMsTw8FljhrEM2lvUkqg';
+var SB_TABLE = 'rocks_workbook';
+var SB_ID = 'downing_capital';
+var _saveTimer = null;
+
+function applyData(s) {
+  if (!s) return;
+  if (s.quarter)       D.quarter       = s.quarter;
+  if (s.ns)            D.ns            = s.ns;
+  if (s.ideationRocks) D.ideationRocks = s.ideationRocks;
+  if (s.talentRocks)   D.talentRocks   = s.talentRocks;
+  if (s.buildRocks)    D.buildRocks    = s.buildRocks;
+  if (s.opsRocks)      D.opsRocks      = s.opsRocks;
+  if (s.ceoRocks)      D.ceoRocks      = s.ceoRocks;
+  if (s.better)        D.better        = s.better;
+  if (s.blockers)      D.blockers      = s.blockers;
+  if (s.support)       D.support       = s.support;
+  if (s.expanded)      D.expanded      = s.expanded;
+  if (s.srTab)         D.srTab         = s.srTab;
+  if (s.arCollapsed)   D.arCollapsed   = s.arCollapsed;
+  if (s.indCollapsed)  D.indCollapsed  = s.indCollapsed;
+  if (s.indRockCollapsed) D.indRockCollapsed = s.indRockCollapsed;
+  if (s.activeFilter) D.activeFilter = s.activeFilter;
+}
+
+function sbHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'apikey': SB_KEY,
+    'Authorization': 'Bearer ' + SB_KEY,
+    'Prefer': 'resolution=merge-duplicates'
+  };
+}
+
+// Debounced save — waits 800ms after last change before writing to Supabase
+function save() {
+  // Always write to localStorage as fallback
+  try { D._v=DATA_VERSION; localStorage.setItem(STORE, JSON.stringify(D)); } catch(e) {}
+  // Debounce Supabase write
+  if (_saveTimer) clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(function() { saveToSupabase(); }, 800);
+}
+
+function saveToSupabase() {
+  D._v = DATA_VERSION;
+  var payload = { id: SB_ID, data: D, updated_at: new Date().toISOString() };
+  fetch(SB_URL + '/rest/v1/' + SB_TABLE, {
+    method: 'POST',
+    headers: sbHeaders(),
+    body: JSON.stringify(payload)
+  }).then(function(r) {
+    if (!r.ok) r.text().then(function(t){ console.warn('Supabase save error:', t); });
+    else setSyncStatus('saved');
+  }).catch(function(e) { console.warn('Supabase save failed:', e); setSyncStatus('error'); });
+}
+
+function setSyncStatus(state) {
+  var el = document.getElementById('sync-status');
+  if (!el) return;
+  if (state === 'saved') {
+    el.textContent = '✓ Saved';
+    el.style.color = 'var(--green)';
+    setTimeout(function(){ el.textContent = ''; }, 2500);
+  } else if (state === 'loading') {
+    el.textContent = 'Loading…';
+    el.style.color = 'var(--tx3)';
+  } else if (state === 'error') {
+    el.textContent = '⚠ Sync error';
+    el.style.color = 'var(--amber)';
+  }
+}
+
+function load() {
+  // Check data version — if stale, wipe and start fresh so seeds run
+  try {
+    var raw = localStorage.getItem(STORE);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (!parsed._v || parsed._v < DATA_VERSION) {
+        localStorage.removeItem(STORE);
+        raw = null;
+        console.log('Data version mismatch — cleared localStorage, re-seeding.');
+      } else {
+        applyData(parsed);
+      }
+    }
+  } catch(e) {}
+  // Then fetch from Supabase and override
+  setSyncStatus('loading');
+  fetch(SB_URL + '/rest/v1/' + SB_TABLE + '?id=eq.' + SB_ID + '&select=data', {
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY
+    }
+  }).then(function(r) { return r.json(); })
+  .then(function(rows) {
+    if (rows && rows.length > 0 && rows[0].data) {
+      applyData(rows[0].data);
+      try { D._v=DATA_VERSION; localStorage.setItem(STORE, JSON.stringify(D)); } catch(e) {}
+    }
+    setSyncStatus('');
+    bootApp(); // seeds run inside bootApp after data is applied
+  }).catch(function(e) {
+    console.warn('Supabase load failed, using local data:', e);
+    setSyncStatus('error');
+    bootApp();
+  });
+}
+
+function getRocks(t) {
+  if (t==='ideation') return D.ideationRocks;
+  if (t==='talent')   return D.talentRocks;
+  if (t==='build')    return D.buildRocks;
+  if (t==='ops')      return D.opsRocks;
+  if (t==='ceo')      return D.ceoRocks;
+  return [];
+}
+
+function uid() { return '_'+Math.random().toString(36).substr(2,9); }
+
+function esc(s) {
+  if (s===null||s===undefined) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function qq(s) { return "'" + String(s).replace(/'/g,"\\'") + "'"; }
+
+function currentQ() {
+  var n=new Date(); return 'Q'+Math.ceil((n.getMonth()+1)/3)+' '+n.getFullYear();
+}
+
+function statusPill(s) {
+  var m = {Done:'p-dn','On Track':'p-ot','At Risk':'p-ar','Not Started':'p-ns','Unplanned':'p-up'};
+  return '<span class="pill '+(m[s]||'p-ns')+'">'+esc(s)+'</span>';
+}
+
+function avgScore(rock) {
+  if (rock.score!==undefined && rock.score!=='' && !isNaN(parseFloat(rock.score))) return parseFloat(rock.score);
+  return null;
+}
+
+// ── Nav ────────────────────────────────────────────────────────────────────
+function go(tab) {
+  var el = document.querySelector('[data-tab="'+tab+'"]');
+  switchTab(tab, el);
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.remove('active'); });
+  var panel = document.getElementById('panel-'+tab);
+  if (panel) panel.classList.add('active');
+  if (el) el.classList.add('active');
+  var meta = PAGE_META[tab]||{title:tab,sub:''};
+  document.getElementById('pg-title').textContent = meta.title;
+  document.getElementById('pg-sub').textContent   = meta.sub;
+  var act = document.getElementById('topbar-act');
+  act.innerHTML = '';
+  if (tab==='northstar') {
+    act.innerHTML = '<button class="btn btn-ghost" onclick="addNSRow()">+ Add metric</button>';
+  } else if (ROCK_TYPES.indexOf(tab)>=0) {
+    var btn = document.createElement('button');
+    btn.className = 'btn btn-ghost';
+    btn.textContent = '+ Add Rock';
+    btn.onclick = function(){ showAddRock(tab); };
+    act.appendChild(btn);
+  }
+  renderTab(tab);
+}
+
+function renderTab(tab) {
+  if (tab==='northstar')             renderNS();
+  else if (tab==='allrocks')         renderAllRocks();
+  else if (ROCK_TYPES.indexOf(tab)>=0) renderRocks(tab);
+  else if (tab==='dash-ind')         renderDashInd();
+  else if (tab==='better')           renderBetter();
+  else if (tab==='blockers')         renderBlockers();
+  else if (tab==='support')          renderSupport();
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────────
+
+function sortByScore(arr) {
+  return arr.slice().sort(function(a,b){
+    var sa = a.score!==undefined&&a.score!==''&&!isNaN(parseFloat(a.score)) ? parseFloat(a.score) : -1;
+    var sb = b.score!==undefined&&b.score!==''&&!isNaN(parseFloat(b.score)) ? parseFloat(b.score) : -1;
+    return sb - sa;
+  });
+}
+
+function sortSubrocksByStatus(subrocks) {
+  var order = {'Done':0,'On Track':1,'At Risk':2,'Not Started':3,'Unplanned':4};
+  return subrocks.slice().sort(function(a,b){
+    var sa = order[a.status]!==undefined ? order[a.status] : 3;
+    var sb = order[b.status]!==undefined ? order[b.status] : 3;
+    return sa - sb;
+  });
+}
+function renderStats(elId, rocks) {
+  var el=document.getElementById(elId); if(!el) return;
+  var ot=0,ar=0,dn=0,ns=0,up=0;
+  rocks.forEach(function(r){
+    if(!r.subrocks.length){ up++; return; }
+    r.subrocks.forEach(function(s){
+      if(!s.targetDate) up++;
+      if(s.status==='On Track')ot++;
+      else if(s.status==='At Risk')ar++;
+      else if(s.status==='Done')dn++;
+      else ns++;
+    });
+  });
+  // Determine active filter for this panel
+  var tabKey = elId.replace('-stats','');
+  var af = D.activeFilter && D.activeFilter[tabKey];
+
+  el.innerHTML='';
+  var cards=[
+    {label:'Unplanned',  val:up, color:'var(--amber)', filter:'Unplanned'},
+    {label:'Not Started',val:ns, color:'var(--tx2)',   filter:'Not Started'},
+    {label:'On Track',   val:ot, color:'var(--green)', filter:'On Track'},
+    {label:'At Risk',    val:ar, color:'var(--amber)', filter:'At Risk'},
+    {label:'Done',       val:dn, color:'var(--blue)',  filter:'Done'}
+  ];
+  cards.forEach(function(c){
+    var isActive=af===c.filter;
+    var div=document.createElement('div');
+    div.className='stat-card';
+    div.style.cssText='cursor:pointer;transition:box-shadow .15s,background .15s;'+(isActive?'box-shadow:0 0 0 2px '+c.color+';background:rgba(24,95,165,0.06);':'');
+    div.innerHTML='<div class="stat-lbl">'+c.label+'</div><div class="stat-val" style="color:'+c.color+'">'+c.val+'</div>'+(isActive?'<div style="font-size:9px;color:'+c.color+';margin-top:2px;text-transform:uppercase;letter-spacing:.05em;font-weight:500">Active</div>':'');
+    div.addEventListener('click',function(){ toggleFilter(tabKey,c.filter); });
+    el.appendChild(div);
+  });
+}
+
+function toggleFilter(tabKey, filterVal) {
+  if(!D.activeFilter) D.activeFilter={};
+  if(D.activeFilter[tabKey]===filterVal){
+    delete D.activeFilter[tabKey]; // toggle off
+  } else {
+    D.activeFilter[tabKey]=filterVal;
+  }
+  // Re-render just this tab's rocks list
+  if(ROCK_TYPES.indexOf(tabKey)>=0) renderRocks(tabKey);
+  else if(tabKey==='allrocks') renderAllRocks();
+  else if(tabKey==='dash-ind') renderDashInd();
+}
+
+// ── North Star ─────────────────────────────────────────────────────────────
+function renderNS() {
+  var tbl=document.getElementById('ns-table'); if(!tbl) return;
+  var note=document.getElementById('ns-note');
+
+  // Current week index (same logic as milestones)
+  var today=new Date(); today.setHours(0,0,0,0);
+  function parseWD(str){ if(!str) return null; var p=str.split('.'); if(p.length!==2) return null; return new Date(2026,parseInt(p[1],10)-1,parseInt(p[0],10)); }
+  var currentWeekIdx=-1;
+  for(var ci=0;ci<WEEK_DATES.length;ci++){ var wd=parseWD(WEEK_DATES[ci]); if(wd&&today<=wd){ currentWeekIdx=ci; break; } }
+  if(currentWeekIdx===-1) currentWeekIdx=WEEK_DATES.length-1;
+
+  tbl.innerHTML='';
+
+  // Build header
+  var thead=document.createElement('thead');
+  var hr=document.createElement('tr');
+
+  function th(label, style, extra) {
+    var el=document.createElement('th'); el.style.cssText=style||'';
+    if(extra) { el.innerHTML=label; } else { el.textContent=label; }
+    hr.appendChild(el); return el;
+  }
+  th('Type','width:80px');
+  th('Metric','min-width:150px');
+  th('Owner','width:90px');
+  th('Q Target','width:72px');
+  WEEK_DATES.forEach(function(w,wi){
+    var isCurr=wi===currentWeekIdx;
+    var t=document.createElement('th');
+    t.style.cssText='width:44px;text-align:center;font-size:10px;'+(isCurr?'background:rgba(24,95,165,0.07);border-top:2px solid var(--blue);':'');
+    if(isCurr){
+      t.innerHTML='<span style="font-weight:600;color:var(--blue)">'+w+'</span><span style="display:block;font-size:9px;color:var(--blue);opacity:.7">now</span>';
+    } else {
+      t.textContent=w;
+    }
+    hr.appendChild(t);
+  });
+  th('Total','width:60px');
+  th('vs Tgt','width:62px');
+  th('','width:28px');
+  thead.appendChild(hr); tbl.appendChild(thead);
+
+  var tbody=document.createElement('tbody');
+  D.ns.forEach(function(m,i){
+    var nums=m.weeks.map(function(w){return parseFloat(w)||0;});
+    var total=nums.reduce(function(a,b){return a+b;},0);
+    var tgt=parseFloat(m.target)||0;
+    var vs, vc;
+    if(!tgt){ vs='—'; vc=''; }
+    else {
+      var pct = Math.round(total/tgt*100);
+      vs = pct + '%';
+      vc = total>=tgt ? 'ns-pos' : 'ns-neg';
+    }
+
+    var tr=document.createElement('tr');
+
+    // Type — editable select
+    var tdType=document.createElement('td');
+    var typeSel=document.createElement('select'); typeSel.className='ctrl'; typeSel.style.cssText='font-size:11px;width:100%';
+    ['LEADING','LAGGING'].forEach(function(t){
+      var o=document.createElement('option'); o.value=t; o.textContent=t;
+      if(t===(m.type||'LAGGING')) o.selected=true;
+      typeSel.appendChild(o);
+    });
+    (function(metric){
+      typeSel.addEventListener('change',function(){
+        metric.type=this.value;
+        save();
+      });
+    })(m);
+    tdType.appendChild(typeSel);
+    // Force value after DOM insertion
+    typeSel.value=m.type||'LAGGING';
+
+    // Metric — editable
+    var tdMetric=document.createElement('td'); tdMetric.className='ed'; tdMetric.contentEditable='true'; tdMetric.textContent=m.metric||'';
+    tdMetric.addEventListener('blur',function(){ m.metric=this.textContent.trim(); save(); });
+
+    // Owner — editable
+    var tdOwner=document.createElement('td'); tdOwner.className='ed'; tdOwner.contentEditable='true'; tdOwner.textContent=m.owner||'';
+    tdOwner.addEventListener('blur',function(){ m.owner=this.textContent.trim(); save(); });
+
+    // Target
+    var tdTgt=document.createElement('td');
+    var tgtInp=document.createElement('input'); tgtInp.type='number'; tgtInp.className='ns-wk'; tgtInp.style.cssText='width:62px;-moz-appearance:textfield;'; tgtInp.value=m.target||''; tgtInp.placeholder='—';
+    tgtInp.addEventListener('change',function(){ m.target=this.value; save(); renderNS(); });
+    tdTgt.appendChild(tgtInp);
+
+    tr.appendChild(tdType); tr.appendChild(tdMetric); tr.appendChild(tdOwner); tr.appendChild(tdTgt);
+
+    // Week inputs
+    m.weeks.forEach(function(w,wi){
+      var isCurr=wi===currentWeekIdx;
+      var td=document.createElement('td');
+      td.style.cssText=isCurr?'background:rgba(24,95,165,0.07);':'';
+      var inp=document.createElement('input'); inp.type='number'; inp.className='ns-wk';
+      inp.style.cssText='-moz-appearance:textfield;';
+      inp.value=w||'';
+      inp.addEventListener('change',function(){ m.weeks[wi]=this.value; save(); renderNS(); });
+      td.appendChild(inp); tr.appendChild(td);
+    });
+
+    // Total
+    var tdTotal=document.createElement('td'); tdTotal.style.cssText='font-family:var(--mono);font-weight:500'; tdTotal.textContent=total.toFixed(1);
+
+    // vs Target
+    var tdVs=document.createElement('td'); tdVs.className=vc; tdVs.textContent=vs;
+
+    // Delete
+    var tdDel=document.createElement('td');
+    var delBtn=document.createElement('button'); delBtn.className='btn-del'; delBtn.innerHTML='&#10005;';
+    delBtn.addEventListener('click',function(){ D.ns.splice(i,1); save(); renderNS(); });
+    tdDel.appendChild(delBtn);
+
+    tr.appendChild(tdTotal); tr.appendChild(tdVs); tr.appendChild(tdDel);
+    tbody.appendChild(tr);
+  });
+
+  tbl.appendChild(tbody);
+
+  if(note) note.textContent='Leading = what you act on today. Lagging = confirms it is working. Two consecutive misses → bring to weekly check-in.';
+}
+
+function addNSRow(){
+  D.ns.push({type:'LAGGING',metric:'New metric',owner:'',target:'',weeks:['','','','','','','','','','','',''],status:'On Track'});
+  save(); renderNS();
+}
+function nsEdit(i,f,v){D.ns[i][f]=v; save();}
+function nsWk(i,wi,v){D.ns[i].weeks[wi]=v; save(); renderNS();}
+function nsDel(i){D.ns.splice(i,1); save(); renderNS();}
+
+// ── Rocks ──────────────────────────────────────────────────────────────────
+function renderRocks(type) {
+  var rocks=getRocks(type);
+  renderStats(type+'-stats',rocks);
+  var el=document.getElementById(type+'-list'); if(!el) return;
+  if(!rocks.length){
+    el.innerHTML='<div class="empty"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 20h18L14.08 5.39a2.3 2.3 0 0 0-4.16 0L3 20z"/></svg>No rocks yet — add one above</div>';
+    return;
+  }
+  el.innerHTML='';
+  var af = D.activeFilter && D.activeFilter[type];
+  var filteredRocks = sortByScore(rocks).filter(function(rock){
+    if(!af) return true;
+    if(af==='Unplanned') return !rock.subrocks.length || rock.subrocks.some(function(s){return !s.targetDate;});
+    return rock.subrocks.some(function(s){
+      if(af==='Not Started') return s.targetDate && (s.status==='Not Started'||!s.status);
+      return s.status===af;
+    });
+  });
+  if(!filteredRocks.length){
+    var emptyDiv=document.createElement('div');
+    emptyDiv.className='empty'; emptyDiv.style.cssText='padding:20px;font-size:12px;color:var(--tx3)';
+    emptyDiv.textContent='No rocks match this filter. ';
+    var clearBtn=document.createElement('button'); clearBtn.className='btn btn-ghost'; clearBtn.style.cssText='font-size:11px;margin-left:8px'; clearBtn.textContent='Clear filter';
+    clearBtn.addEventListener('click',function(){ toggleFilter(type, D.activeFilter&&D.activeFilter[type]); });
+    emptyDiv.appendChild(clearBtn); el.appendChild(emptyDiv);
+    return;
+  }
+  filteredRocks.forEach(function(rock,ri){
+    el.appendChild(buildRockCard(type,rock,ri));
+  });
+}
+
+function buildRockCard(type,rock,ri) {
+  var score=rock.score!==undefined&&rock.score!==''&&!isNaN(parseFloat(rock.score))?parseFloat(rock.score):null;
+  var topStatus;
+  if(!rock.subrocks.length){
+    topStatus='Unplanned';
+  } else {
+    var statuses=rock.subrocks.map(function(s){return s.status||'Not Started';});
+    var hasDone=statuses.indexOf('Done')>=0;
+    var hasAtRisk=statuses.indexOf('At Risk')>=0;
+    var hasOnTrack=statuses.indexOf('On Track')>=0;
+    var allDone=statuses.every(function(s){return s==='Done';});
+    if(allDone) topStatus='Done';
+    else if(hasAtRisk) topStatus='At Risk';
+    else if(hasOnTrack||hasDone) topStatus='On Track';
+    else topStatus='Not Started';
+  }
+  var exp=D.expanded[rock.id];
+  var tab=D.srTab[rock.id]||'subrocks';
+
+  var card=document.createElement('div');
+  card.className='rock-card';
+
+  // Header
+  var hdr=document.createElement('div');
+  hdr.className='rock-hdr';
+  if(!rock.subrocks.length) hdr.style.background='rgba(163,45,45,0.06)';
+
+  var numSpan=document.createElement('span'); numSpan.className='rock-num'; numSpan.textContent=(ri+1);
+  var info=document.createElement('div'); info.className='rock-info';
+  var titleDiv=document.createElement('div'); titleDiv.className='rock-title ed'; titleDiv.contentEditable='true'; titleDiv.textContent=rock.title;
+  titleDiv.addEventListener('click',function(e){ e.stopPropagation(); });
+  titleDiv.addEventListener('keydown',function(e){ if(e.key==='Enter'){e.preventDefault();this.blur();} });
+  titleDiv.addEventListener('blur',function(){
+    var val=this.textContent.trim();
+    if(val) rock.title=val;
+    else this.textContent=rock.title;
+    save(); renderDashInd();
+  });
+  var metaDiv=document.createElement('div'); metaDiv.className='rock-meta';
+  var ownerEl=document.createElement('span');
+  ownerEl.textContent=rock.owner||'+ owner';
+  ownerEl.style.cssText='cursor:text;padding:1px 4px;border-radius:3px;outline:none;color:'+(rock.owner?'var(--tx3)':'var(--blue)');
+  ownerEl.contentEditable='true';
+  ownerEl.title='Click to edit owner';
+  ownerEl.addEventListener('click',function(e){ e.stopPropagation(); });
+  ownerEl.addEventListener('focus',function(){ if(this.textContent==='+ owner') this.textContent=''; this.style.background='var(--surf2)'; this.style.boxShadow='0 0 0 1.5px var(--blue)'; });
+  ownerEl.addEventListener('blur',function(){
+    this.style.background=''; this.style.boxShadow='';
+    var val=this.textContent.trim();
+    if(!val){ this.textContent='+ owner'; this.style.color='var(--blue)'; rock.owner=''; }
+    else { rock.owner=val; this.style.color='var(--tx3)'; }
+    save(); renderDashInd(); 
+  });
+  ownerEl.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); this.blur(); } });
+  metaDiv.appendChild(ownerEl);
+  var cntSpan=document.createElement('span'); cntSpan.textContent=rock.subrocks.length+' sub-rocks'; metaDiv.appendChild(cntSpan);
+  info.appendChild(titleDiv); info.appendChild(metaDiv);
+
+  var rightDiv=document.createElement('div'); rightDiv.className='rock-right';
+  var scoreInp=document.createElement('input');
+  scoreInp.type='number'; scoreInp.className='score-rock-inp';
+  scoreInp.min='0'; scoreInp.max='1'; scoreInp.step='0.1';
+  scoreInp.placeholder='Q Score'; scoreInp.title='Q Score (0–1)';
+  scoreInp.value=rock.score||'';
+  scoreInp.addEventListener('click',function(e){ e.stopPropagation(); });
+  scoreInp.addEventListener('change',function(e){
+    e.stopPropagation();
+    rock.score=this.value;
+    save();
+    renderStats(type+'-stats', getRocks(type));
+    renderAllRocks();
+  });
+  rightDiv.appendChild(scoreInp);
+
+  var statusDiv=document.createElement('div'); statusDiv.className='rock-right-status';
+  statusDiv.innerHTML=statusPill(topStatus);
+
+  var chevron=document.createElement('svg');
+  chevron.setAttribute('class','chevron'+(exp?' open':''));
+  chevron.setAttribute('width','14'); chevron.setAttribute('height','14');
+  chevron.setAttribute('viewBox','0 0 24 24'); chevron.setAttribute('fill','none');
+  chevron.setAttribute('stroke','currentColor'); chevron.setAttribute('stroke-width','2');
+  chevron.setAttribute('stroke-linecap','round'); chevron.setAttribute('stroke-linejoin','round');
+  chevron.innerHTML='<polyline points="6 9 12 15 18 9"/>';
+
+  var delRockBtn=document.createElement('button');
+  delRockBtn.className='btn-del'; delRockBtn.innerHTML='&#10005;';
+  delRockBtn.title='Delete rock';
+  delRockBtn.style.cssText='margin-left:4px;opacity:0;transition:opacity .15s;';
+  delRockBtn.addEventListener('click',function(e){
+    e.stopPropagation();
+    confirmDelete(
+      'Delete Rock?',
+      'This will permanently delete "'+rock.title+'" and all its sub-rocks. This cannot be undone.',
+      function(){
+        var rocks=getRocks(type);
+        var idx=rocks.findIndex(function(r){return r.id===rock.id;});
+        if(idx>-1) rocks.splice(idx,1);
+        save(); reRender(type); renderDashInd(); 
+      }
+    );
+  });
+
+  hdr.appendChild(numSpan); hdr.appendChild(info); hdr.appendChild(rightDiv);
+  hdr.appendChild(statusDiv); hdr.appendChild(chevron); hdr.appendChild(delRockBtn);
+
+  hdr.addEventListener('mouseenter',function(){ delRockBtn.style.opacity='1'; });
+  hdr.addEventListener('mouseleave',function(){ delRockBtn.style.opacity='0'; });
+
+  hdr.addEventListener('click',function(e){
+    if(e.target===scoreInp||e.target.closest('.score-rock-inp')) return;
+    if(e.target===delRockBtn) return;
+    if(e.target===titleDiv||titleDiv.contains(e.target)) return;
+    toggleRock(type,rock.id);
+  });
+  card.appendChild(hdr);
+
+  if(exp) {
+    var wrap=document.createElement('div');
+    wrap.className='sr-wrap';
+
+    // Tabs
+    var tabBar=document.createElement('div');
+    tabBar.className='sr-tabs';
+    var t1=document.createElement('button'); t1.className='sr-tab'+(tab==='subrocks'?' active':''); t1.textContent='Sub-Rocks';
+    var t2=document.createElement('button'); t2.className='sr-tab'+(tab==='milestones'?' active':''); t2.textContent='Week-by-Week Milestones';
+    t1.addEventListener('click',function(e){e.stopPropagation();setSRTab(type,rock.id,'subrocks');});
+    t2.addEventListener('click',function(e){e.stopPropagation();setSRTab(type,rock.id,'milestones');});
+    tabBar.appendChild(t1); tabBar.appendChild(t2);
+    wrap.appendChild(tabBar);
+
+    var body=document.createElement('div');
+    body.className='sr-body';
+    if(tab==='subrocks') buildSubrocksTab(body,type,rock,ri);
+    else buildMilestonesTab(body,type,rock);
+    wrap.appendChild(body);
+    card.appendChild(wrap);
+  }
+  return card;
+}
+
+function buildSubrocksTab(container,type,rock,ri) {
+  var cols='24px 1fr 72px 110px 130px 130px 110px 32px';
+  var hdr=document.createElement('div');
+  hdr.className='sr-hdr'; hdr.style.cssText='display:grid;grid-template-columns:'+cols+';gap:6px;align-items:center;';
+  hdr.innerHTML='<span class="col"></span><span class="col">Sub-Rock</span><span class="col">Owner</span><span class="col">PortCo</span><span class="col">Target Date</span><span class="col">Conclusion Date</span><span class="col">Status</span><span class="col"></span>';
+  container.appendChild(hdr);
+
+  var sortedSubrocks = sortSubrocksByStatus(rock.subrocks);
+  sortedSubrocks.forEach(function(sub,si){
+    var row=document.createElement('div');
+    row.className='sr-row';
+    var rowBg = !sub.targetDate ? 'background:rgba(163,45,45,0.05);' : '';
+    row.style.cssText='display:grid;grid-template-columns:'+cols+';gap:6px;align-items:start;'+rowBg;
+
+    var idx=document.createElement('span'); idx.className='sr-idx'; idx.textContent=(ri+1)+'.'+(si+1);
+
+    var info=document.createElement('div'); info.style.minWidth='0';
+    var titleEl=document.createElement('div'); titleEl.className='ed'; titleEl.style.cssText='font-weight:500;white-space:normal;overflow:visible;text-overflow:unset;word-break:break-word;'; titleEl.contentEditable='true'; titleEl.textContent=sub.title||'';
+    titleEl.addEventListener('blur',function(){sub.title=this.textContent; save();});
+    info.appendChild(titleEl);
+    if(!sub.targetDate){
+      var upTag=document.createElement('span');
+      upTag.textContent='unplanned';
+      upTag.style.cssText='font-size:9px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:var(--red);background:var(--red-bg);padding:1px 5px;border-radius:8px;margin-top:2px;display:inline-block;';
+      info.appendChild(upTag);
+    }
+
+    var ownerEl=document.createElement('div'); ownerEl.className='ed'; ownerEl.style.cssText='color:var(--tx2);font-size:11px;word-break:break-word;line-height:1.3;text-align:left;'; ownerEl.contentEditable='true'; ownerEl.textContent=sub.owner||'';
+    ownerEl.addEventListener('blur',function(){sub.owner=this.textContent; save(); renderDashInd(); });
+
+    var portcoSel=document.createElement('select'); portcoSel.className='ctrl'; portcoSel.style.cssText='font-size:11px;width:100%';
+    var emptyPc=document.createElement('option'); emptyPc.value=''; emptyPc.textContent='— none —'; portcoSel.appendChild(emptyPc);
+    PORTCOS.forEach(function(p){ var o=document.createElement('option'); o.value=p; o.textContent=p; if(sub.portco===p) o.selected=true; portcoSel.appendChild(o); });
+    portcoSel.addEventListener('change',function(){ sub.portco=this.value; save(); });
+
+    var targetInp=document.createElement('input'); targetInp.type='date'; targetInp.className='ctrl'; targetInp.style.cssText='font-size:11px;width:100%'; targetInp.value=sub.targetDate||'';
+    targetInp.addEventListener('change',function(){
+      sub.targetDate=this.value;
+      save(); reRender(type); renderStats(type+'-stats', getRocks(type));
+    });
+
+    var doneInp=document.createElement('input'); doneInp.type='date'; doneInp.className='ctrl'; doneInp.style.cssText='font-size:11px;width:100%'; doneInp.value=sub.doneDate||'';
+    doneInp.addEventListener('change',function(){
+      sub.doneDate=this.value;
+      if(this.value) sub.status='Done';
+      save(); reRender(type); renderDashInd(); 
+    });
+
+    var stSel=document.createElement('select'); stSel.className='ctrl'; stSel.style.cssText='font-size:11px;width:100%';
+    STATUSES.forEach(function(s){ var o=document.createElement('option'); o.textContent=s; if(sub.status===s) o.selected=true; stSel.appendChild(o); });
+    stSel.addEventListener('change',function(){sub.status=this.value; save(); reRender(type); renderDashInd(); });
+
+    var delBtn=document.createElement('button'); delBtn.className='btn-del'; delBtn.innerHTML='&#10005;';
+    delBtn.title='Delete sub-rock';
+    delBtn.addEventListener('click',function(){
+      confirmDelete(
+        'Delete Sub-Rock?',
+        'This will permanently delete "'+sub.title+'". This cannot be undone.',
+        function(){ rock.subrocks=rock.subrocks.filter(function(s){return s.id!==sub.id;}); save(); reRender(type); renderDashInd();  }
+      );
+    });
+
+    row.appendChild(idx); row.appendChild(info); row.appendChild(ownerEl);
+    row.appendChild(portcoSel); row.appendChild(targetInp); row.appendChild(doneInp); row.appendChild(stSel); row.appendChild(delBtn);
+    container.appendChild(row);
+  });
+
+  var addRow=document.createElement('div'); addRow.className='add-sr-row';
+  var grid=document.createElement('div'); grid.className='add-sr-grid'; grid.style.gridTemplateColumns='1fr 110px 110px';
+  var tInp=document.createElement('input'); tInp.type='text'; tInp.placeholder='Sub-Rock title';
+  var oInp=document.createElement('input'); oInp.type='text'; oInp.placeholder='Owner';
+  var sSel=document.createElement('select');
+  STATUSES.forEach(function(s){ var o=document.createElement('option'); o.textContent=s; sSel.appendChild(o); });
+  [tInp,oInp,sSel].forEach(function(el){ grid.appendChild(el); });
+  var addBtn=document.createElement('button'); addBtn.className='btn btn-ghost'; addBtn.style.cssText='white-space:nowrap;flex-shrink:0;font-size:11px'; addBtn.textContent='+ Add';
+  addBtn.addEventListener('click',function(){
+    if(!tInp.value.trim()) return;
+    rock.subrocks.push({id:uid(),title:tInp.value.trim(),kr:'',owner:oInp.value.trim(),dept:'',portco:'',score:'',targetDate:'',doneDate:'',status:sSel.value,milestones:Array(12).fill(''),msNotes:Array(12).fill('')});
+    D.expanded[rock.id]=true; D.srTab[rock.id]='subrocks';
+    save(); reRender(type); renderDashInd(); 
+  });
+  addRow.appendChild(grid); addRow.appendChild(addBtn);
+  container.appendChild(addRow);
+
+  var note=document.createElement('div'); note.className='grade-note'; note.textContent='Q Score on the rock card is set by leadership at quarter end. Setting a Conclusion Date auto-marks the sub-rock as Done.';
+  container.appendChild(note);
+}
+
+function buildMilestonesTab(container,type,rock) {
+  if(!rock.subrocks.length){
+    var empty=document.createElement('div'); empty.className='empty'; empty.style.padding='20px'; empty.textContent='Add sub-rocks first to plan milestones';
+    container.appendChild(empty); return;
+  }
+
+  // Helper: parse DD.MM date string to a Date object (Q2 2026)
+  function parseWeekDate(str) {
+    if(!str) return null;
+    var parts=str.split('.');
+    if(parts.length!==2) return null;
+    return new Date(2026, parseInt(parts[1],10)-1, parseInt(parts[0],10));
+  }
+
+  // Helper: parse YYYY-MM-DD (from date input) to Date
+  function parseISODate(str) {
+    if(!str) return null;
+    var d=new Date(str);
+    return isNaN(d.getTime())?null:d;
+  }
+
+  // For a given date, find which week index (0-11) it falls in (or closest)
+  function dateToWeekIdx(d) {
+    if(!d) return -1;
+    for(var i=0;i<WEEK_DATES.length;i++){
+      var wd=parseWeekDate(WEEK_DATES[i]);
+      if(!wd) continue;
+      // Week i covers from previous week+1 day to this week's end date
+      var prevEnd=i===0?new Date(2026,2,26):parseWeekDate(WEEK_DATES[i-1]);
+      if(d<=wd) return i;
+    }
+    return WEEK_DATES.length-1;
+  }
+
+  var wrap=document.createElement('div'); wrap.className='ms-wrap';
+  var tbl=document.createElement('table'); tbl.className='ms-table';
+
+  // Header
+  var thead=document.createElement('thead');
+  var hr=document.createElement('tr');
+  var th0=document.createElement('th'); th0.style.cssText='min-width:160px;max-width:180px;position:sticky;left:0;background:var(--surf);word-break:break-word;'; th0.textContent='Sub-Rock'; hr.appendChild(th0);
+  var th1=document.createElement('th'); th1.style.cssText='width:90px'; th1.textContent='Owner'; hr.appendChild(th1);
+  var th2=document.createElement('th'); th2.style.cssText='width:90px'; th2.textContent='Target'; hr.appendChild(th2);
+  // Determine current week index based on today's date
+  var today=new Date(); today.setHours(0,0,0,0);
+  var currentWeekIdx=-1;
+  for(var ci=0;ci<WEEK_DATES.length;ci++){
+    var wd=parseWeekDate(WEEK_DATES[ci]);
+    if(wd && today<=wd){ currentWeekIdx=ci; break; }
+  }
+  if(currentWeekIdx===-1 && today>parseWeekDate(WEEK_DATES[WEEK_DATES.length-1])) currentWeekIdx=WEEK_DATES.length-1;
+
+  WEEK_DATES.forEach(function(w, wi){
+    var th=document.createElement('th');
+    var isCurrent = wi===currentWeekIdx;
+    th.style.cssText='width:56px;text-align:center;font-size:10px;position:relative;'+(isCurrent?'background:rgba(24,95,165,0.07);':'');
+    if(isCurrent){
+      th.style.borderTop='2px solid var(--blue)';
+      th.innerHTML='<span style="display:block;font-weight:600;color:var(--blue)">'+w+'</span><span style="display:block;font-size:9px;color:var(--blue);opacity:.7">now</span>';
+    } else {
+      th.textContent=w;
+    }
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr); tbl.appendChild(thead);
+
+  var tbody=document.createElement('tbody');
+
+  rock.subrocks.forEach(function(sub){
+    if(!sub.milestones||sub.milestones.length!==12) sub.milestones=Array(12).fill('');
+    if(!sub.msNotes||sub.msNotes.length!==12) sub.msNotes=Array(12).fill('');
+
+    // Determine target week index from sub.targetDate
+    var targetIdx = dateToWeekIdx(parseISODate(sub.targetDate));
+
+    // Determine done week index from sub.doneDate (if set) or from milestones
+    var doneIdx = -1;
+    if(sub.doneDate) {
+      doneIdx = dateToWeekIdx(parseISODate(sub.doneDate));
+    } else {
+      // Legacy: check milestones array for 'Done'
+      for(var i=0;i<sub.milestones.length;i++){
+        if(sub.milestones[i]==='Done'||sub.milestones[i]==='done') { doneIdx=i; break; }
+      }
+    }
+
+    var tr=document.createElement('tr');
+
+    // Sub-rock title cell
+    var tdTitle=document.createElement('td');
+    tdTitle.style.cssText='position:sticky;left:0;background:var(--surf);font-size:12px;font-weight:500;max-width:160px;word-break:break-word;line-height:1.4;';
+    tdTitle.textContent=sub.title||''; tr.appendChild(tdTitle);
+
+    // Owner cell
+    var tdOwner=document.createElement('td');
+    tdOwner.style.cssText='font-size:11px;color:var(--tx2);word-break:break-word;line-height:1.4;';
+    tdOwner.textContent=sub.owner||''; tr.appendChild(tdOwner);
+
+    // Target date display
+    var tdTarget=document.createElement('td');
+    tdTarget.style.cssText='font-size:11px;color:var(--tx2);text-align:center';
+    if(sub.targetDate){
+      var tDate=parseISODate(sub.targetDate);
+      tdTarget.textContent=tDate?tDate.toLocaleDateString('en-GB',{day:'2-digit',month:'2-digit'}):'';
+    }
+    tr.appendChild(tdTarget);
+
+    // Week dot cells
+    WEEK_DATES.forEach(function(w, wi){
+      var td=document.createElement('td');
+      var isCurrWeek = wi===currentWeekIdx;
+      td.style.cssText='text-align:center;padding:6px 4px;vertical-align:middle;'+(isCurrWeek?'background:rgba(24,95,165,0.07);':'');
+
+      var dot=document.createElement('button');
+      dot.style.cssText='width:18px;height:18px;border-radius:50%;border:none;cursor:pointer;display:inline-block;transition:transform .1s;outline:none;';
+
+      var isTarget = wi===targetIdx;
+      var isDone   = wi===doneIdx;
+      var isPast   = doneIdx>=0 && wi<doneIdx;
+
+      if(isDone){
+        dot.style.background='var(--green)';
+        dot.title='Done — click to clear';
+      } else if(isPast){
+        dot.style.background='var(--green-bg)';
+        dot.style.border='1.5px solid var(--green)';
+        dot.title='Completed';
+      } else if(isTarget){
+        dot.style.background='var(--red-bg)';
+        dot.style.border='2px solid var(--red)';
+        dot.title='Target deadline: '+w+' — right-click or Shift+click to move target';
+      } else {
+        dot.style.background='var(--surf3)';
+        dot.style.border='1.5px solid var(--bdr2)';
+        dot.title='Click to mark done · Shift+click or right-click to set as target';
+      }
+
+      dot.addEventListener('mouseenter',function(){ this.style.transform='scale(1.3)'; });
+      dot.addEventListener('mouseleave',function(){ this.style.transform='scale(1)'; });
+
+      // Left click: mark done / clear done
+      // Shift+click or right-click: set as new target date
+      dot.addEventListener('click', function(e){
+        if(e.shiftKey){
+          // Shift+click sets this week as the new target date
+          var wd=parseWeekDate(WEEK_DATES[wi]);
+          if(wd){
+            var mm=String(wd.getMonth()+1).padStart(2,'0');
+            var dd=String(wd.getDate()).padStart(2,'0');
+            sub.targetDate=wd.getFullYear()+'-'+mm+'-'+dd;
+          }
+          save(); reRender(type); return;
+        }
+        if(isDone && doneIdx===wi){
+          sub.doneDate=''; sub.status='On Track';
+        } else {
+          var wd=parseWeekDate(WEEK_DATES[wi]);
+          if(wd){
+            var mm=String(wd.getMonth()+1).padStart(2,'0');
+            var dd=String(wd.getDate()).padStart(2,'0');
+            sub.doneDate=wd.getFullYear()+'-'+mm+'-'+dd;
+          }
+          sub.status='Done';
+        }
+        save(); reRender(type);
+      });
+
+      dot.addEventListener('contextmenu', function(e){
+        e.preventDefault();
+        // Right-click: set as new target date
+        var wd=parseWeekDate(WEEK_DATES[wi]);
+        if(wd){
+          var mm=String(wd.getMonth()+1).padStart(2,'0');
+          var dd=String(wd.getDate()).padStart(2,'0');
+          sub.targetDate=wd.getFullYear()+'-'+mm+'-'+dd;
+        }
+        save(); reRender(type);
+      });
+
+      td.appendChild(dot);
+      tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  tbl.appendChild(tbody); wrap.appendChild(tbl); container.appendChild(wrap);
+
+  // Legend
+  var legend=document.createElement('div');
+  legend.className='grade-note'; legend.style.marginTop='12px';
+  legend.innerHTML=
+    '<span style="display:inline-flex;align-items:center;gap:5px;margin-right:16px"><span style="width:12px;height:12px;border-radius:50%;background:var(--surf3);border:1.5px solid var(--bdr2);display:inline-block"></span>No activity</span>'+
+    '<span style="display:inline-flex;align-items:center;gap:5px;margin-right:16px"><span style="width:12px;height:12px;border-radius:50%;background:var(--red-bg);border:2px solid var(--red);display:inline-block"></span>Target deadline</span>'+
+    '<span style="display:inline-flex;align-items:center;gap:5px;margin-right:16px"><span style="width:12px;height:12px;border-radius:50%;background:var(--green);display:inline-block"></span>Done</span>'+
+    '<span style="display:inline-flex;align-items:center;gap:5px;margin-right:24px"><span style="width:12px;height:12px;border-radius:50%;background:var(--green-bg);border:1.5px solid var(--green);display:inline-block"></span>Completed period</span>'+
+    '<span style="color:var(--tx3);font-size:10px">· Click = mark done &nbsp;·&nbsp; Shift+click or right-click = move target</span>';
+  container.appendChild(legend);
+}
+
+function toggleRock(type,id){ D.expanded[id]=!D.expanded[id]; save(); reRender(type); }
+function setSRTab(type,id,tab){ D.srTab[id]=tab; save(); reRender(type); }
+function reRender(type){ renderRocks(type); renderAllRocks(); }
+
+// ── Add Rock form ──────────────────────────────────────────────────────────
+function showAddRock(type) {
+  var el=document.getElementById(type+'-add'); if(!el) return;
+  if(el.style.display!=='none'){ el.style.display='none'; return; }
+  el.innerHTML='';
+  var wrap=document.createElement('div'); wrap.className='add-form-wrap';
+  var fr=document.createElement('div'); fr.className='fr'; fr.style.cssText='gap:10px;margin-bottom:10px';
+  function fg(label,inp){ var g=document.createElement('div'); g.className='fg'; var l=document.createElement('label'); l.className='fl'; l.textContent=label; g.appendChild(l); g.appendChild(inp); return g; }
+  var tInp=document.createElement('input'); tInp.className='fc'; tInp.style.fontSize='12px'; tInp.placeholder='e.g. Scale revenue this quarter'; tInp.style.flex='1';
+  var oInp=document.createElement('input'); oInp.className='fc'; oInp.style.cssText='font-size:12px;width:150px'; oInp.placeholder='Owner';
+  var tf=fg('Rock title',tInp); tf.style.flex='1';
+  fr.appendChild(tf); fr.appendChild(fg('Owner',oInp));
+  var actions=document.createElement('div'); actions.className='form-actions';
+  var cancelBtn=document.createElement('button'); cancelBtn.className='btn btn-ghost'; cancelBtn.textContent='Cancel'; cancelBtn.onclick=function(){ el.style.display='none'; };
+  var addBtn=document.createElement('button'); addBtn.className='btn btn-primary'; addBtn.textContent='Add Rock';
+  addBtn.addEventListener('click',function(){
+    if(!tInp.value.trim()) return;
+    getRocks(type).push({id:uid(),title:tInp.value.trim(),dim:'',owner:oInp.value.trim(),dept:'',subrocks:[]});
+    save(); el.style.display='none'; renderRocks(type); renderAllRocks(); renderDashInd(); 
+  });
+  actions.appendChild(cancelBtn); actions.appendChild(addBtn);
+  wrap.appendChild(fr); wrap.appendChild(actions);
+  el.appendChild(wrap); el.style.display='block';
+}
+
+// ── All Rocks ──────────────────────────────────────────────────────────────
+function renderAllRocks() {
+  var el=document.getElementById('ar-content'); var statsEl=document.getElementById('ar-stats');
+  if(!el) return;
+  var allRocks=[]; ROCK_TYPES.forEach(function(t){allRocks=allRocks.concat(getRocks(t));});
+  var total=allRocks.reduce(function(a,r){return a+r.subrocks.length;},0);
+  var ot=0,ar2=0,dn=0;
+  allRocks.forEach(function(r){r.subrocks.forEach(function(s){ if(s.status==='On Track')ot++; else if(s.status==='At Risk')ar2++; else if(s.status==='Done')dn++; });});
+  var ns2=0,up2=0;
+  allRocks.forEach(function(r){
+    if(!r.subrocks.length){ up2++; return; }
+    r.subrocks.forEach(function(s){ if(s.status==='Not Started'||(!s.status))ns2++; if(!s.targetDate)up2++; });
+  });
+  if(statsEl) statsEl.innerHTML=
+    '<div class="stat-card"><div class="stat-lbl">Unplanned</div><div class="stat-val" style="color:var(--amber)">'+up2+'</div></div>'+
+    '<div class="stat-card"><div class="stat-lbl">Not Started</div><div class="stat-val" style="color:var(--tx2)">'+ns2+'</div></div>'+
+    '<div class="stat-card"><div class="stat-lbl">On Track</div><div class="stat-val g">'+ot+'</div></div>'+
+    '<div class="stat-card"><div class="stat-lbl">At Risk</div><div class="stat-val a">'+ar2+'</div></div>'+
+    '<div class="stat-card"><div class="stat-lbl">Done</div><div class="stat-val b">'+dn+'</div></div>';
+  if(!allRocks.length){ el.innerHTML='<div class="empty">No rocks yet</div>'; return; }
+
+  el.innerHTML='';
+  ROCK_TYPES.forEach(function(type){
+    var rocks=getRocks(type); if(!rocks.length) return;
+    var sorted=sortByScore(rocks);
+    var isCollapsed=D.arCollapsed&&D.arCollapsed[type];
+
+    // Section header
+    var secHdr=document.createElement('div');
+    secHdr.style.cssText='display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--r);margin-bottom:6px;cursor:pointer;user-select:none;';
+    secHdr.addEventListener('click',function(){
+      if(!D.arCollapsed) D.arCollapsed={};
+      D.arCollapsed[type]=!D.arCollapsed[type];
+      save(); renderAllRocks();
+    });
+
+    var chevSvg=document.createElement('span');
+    chevSvg.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .2s;transform:rotate('+(isCollapsed?'-90deg':'0deg')+')"><polyline points="6 9 12 15 18 9"/></svg>';
+    chevSvg.style.cssText='display:flex;align-items:center;color:var(--tx3);flex-shrink:0;';
+
+    var labelEl=document.createElement('span');
+    labelEl.style.cssText='font-size:12px;font-weight:500;color:var(--tx);flex:1;';
+    labelEl.textContent=ROCK_LABELS[type]+' ['+rocks.length+']';
+
+    // Mini stats for this pod
+    var podOt=0,podAr=0,podDn=0,podUp=0;
+    rocks.forEach(function(r){
+      if(!r.subrocks.length){podUp++;return;}
+      r.subrocks.forEach(function(s){
+        if(s.status==='On Track')podOt++;
+        else if(s.status==='At Risk')podAr++;
+        else if(s.status==='Done')podDn++;
+        if(!s.targetDate)podUp++;
+      });
+    });
+    var miniStats=document.createElement('span');
+    miniStats.style.cssText='display:flex;gap:8px;font-size:11px;';
+    miniStats.innerHTML=
+      (podUp?'<span style="color:var(--amber)">'+podUp+' unplanned</span>':'')+
+      (podOt?'<span style="color:var(--green)">'+podOt+' on track</span>':'')+
+      (podAr?'<span style="color:var(--red)">'+podAr+' at risk</span>':'')+
+      (podDn?'<span style="color:var(--blue)">'+podDn+' done</span>':'');
+
+    secHdr.appendChild(chevSvg);
+    secHdr.appendChild(labelEl);
+    secHdr.appendChild(miniStats);
+    el.appendChild(secHdr);
+
+    if(!isCollapsed){
+      var rocksWrap=document.createElement('div');
+      rocksWrap.style.cssText='margin-bottom:12px;';
+      sorted.forEach(function(rock){
+        var score=avgScore(rock);
+        var ts;
+      if(!rock.subrocks.length){ ts='Unplanned'; }
+      else {
+        var _st=rock.subrocks.map(function(s){return s.status||'Not Started';});
+        var _allDone=_st.every(function(s){return s==='Done';});
+        var _hasAR=_st.indexOf('At Risk')>=0;
+        var _hasOT=_st.indexOf('On Track')>=0;
+        var _hasDone=_st.indexOf('Done')>=0;
+        if(_allDone) ts='Done';
+        else if(_hasAR) ts='At Risk';
+        else if(_hasOT||_hasDone) ts='On Track';
+        else ts='Not Started';
+      }
+        var c=document.createElement('div'); c.className='rock-card'; c.style.marginBottom='6px';
+        c.innerHTML='<div class="rock-hdr"'+((!rock.subrocks.length)?' style="background:rgba(163,45,45,0.06)"':'')+'>'+
+          '<div class="rock-info">'+
+            '<div class="rock-title">'+esc(rock.title)+'</div>'+
+            '<div class="rock-meta">'+(rock.owner?'<span>'+esc(rock.owner)+'</span>':'')+'<span>'+rock.subrocks.length+' sub-rocks</span></div>'+
+          '</div>'+
+          '<div class="rock-right">'+(score!==null?'<span class="score-chip">'+score.toFixed(2)+'</span>':'')+statusPill(ts)+'</div>'+
+        '</div>';
+        rocksWrap.appendChild(c);
+      });
+      el.appendChild(rocksWrap);
+    }
+  });
+}
+
+function getAllSubs() {
+  var all=[]; ROCK_TYPES.forEach(function(type){ getRocks(type).forEach(function(r){ r.subrocks.forEach(function(s){all.push({sub:s,rock:r,type:type});}); }); }); return all;
+}
+function renderDashInd() {
+  var all=getAllSubs(); var groups={};
+  all.forEach(function(item){
+    var o=(item.sub.owner||'').trim(); if(!o||o.startsWith('[')) return;
+    if(!groups[o]) groups[o]=[]; groups[o].push(item);
+  });
+  var sel=document.getElementById('filt-person'); var cur=sel?sel.value:'';
+  if(sel){ sel.innerHTML='<option value="">All individuals</option>'+Object.keys(groups).sort().map(function(p){ return '<option value="'+esc(p)+'"'+(cur===p?' selected':'')+'>'+esc(p)+'</option>'; }).join(''); }
+  var keys=cur&&groups[cur]?[cur]:Object.keys(groups).sort();
+  var el=document.getElementById('dash-ind-content'); if(!el) return;
+  if(!keys.length){ el.innerHTML='<div class="empty">Assign owners to sub-rocks to see individual dashboards</div>'; return; }
+  el.innerHTML='';
+  keys.forEach(function(person){ el.appendChild(buildPersonMilestoneView(person, groups[person])); });
+}
+
+function renderDashCards(el,keys,groups) {
+  el.innerHTML=''; keys.forEach(function(key){ el.appendChild(buildPersonMilestoneView(key,groups[key])); });
+}
+
+function buildPersonMilestoneView(name, items) {
+  var today=new Date(); today.setHours(0,0,0,0);
+
+  function parseWD(str){ if(!str) return null; var p=str.split('.'); if(p.length!==2) return null; return new Date(2026,parseInt(p[1],10)-1,parseInt(p[0],10)); }
+  function parseISO(str){ if(!str) return null; var d=new Date(str); return isNaN(d.getTime())?null:d; }
+  function dateToWkIdx(d){ if(!d) return -1; for(var i=0;i<WEEK_DATES.length;i++){ var wd=parseWD(WEEK_DATES[i]); if(wd&&d<=wd) return i; } return WEEK_DATES.length-1; }
+
+  var currentWeekIdx=-1;
+  for(var ci=0;ci<WEEK_DATES.length;ci++){ var wd=parseWD(WEEK_DATES[ci]); if(wd&&today<=wd){ currentWeekIdx=ci; break; } }
+  if(currentWeekIdx===-1) currentWeekIdx=WEEK_DATES.length-1;
+
+  var ot=items.filter(function(i){return i.sub.status==='On Track';}).length;
+  var ar=items.filter(function(i){return i.sub.status==='At Risk';}).length;
+  var dn=items.filter(function(i){return i.sub.status==='Done';}).length;
+  var up=items.filter(function(i){return !i.sub.targetDate;}).length;
+  var ns=items.filter(function(i){return i.sub.targetDate&&(i.sub.status==='Not Started'||!i.sub.status);}).length;
+
+  if(!D.indCollapsed) D.indCollapsed={};
+  var isCollapsed=D.indCollapsed[name]||false;
+
+  var wrap=document.createElement('div');
+  wrap.style.cssText='margin-bottom:10px;';
+
+  // Person header
+  var hdr=document.createElement('div');
+  hdr.style.cssText='display:flex;align-items:center;gap:8px;padding:10px 14px;background:#E8EFF8;border:1px solid #C5D4E8;border-radius:'+(isCollapsed?'var(--r)':'var(--r) var(--r) 0 0')+';cursor:pointer;user-select:none;';
+  hdr.addEventListener('click',function(){
+    if(!D.indCollapsed) D.indCollapsed={};
+    D.indCollapsed[name]=!D.indCollapsed[name];
+    save(); renderDashInd();
+  });
+
+  var chevEl=document.createElement('span');
+  chevEl.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .2s;transform:rotate('+(isCollapsed?'-90deg':'0deg')+')"><polyline points="6 9 12 15 18 9"/></svg>';
+  chevEl.style.cssText='display:flex;align-items:center;color:var(--tx3);flex-shrink:0;';
+
+  var nameEl=document.createElement('div'); nameEl.style.cssText='flex:1;';
+  var nameSpan=document.createElement('span'); nameSpan.style.cssText='font-size:13px;font-weight:600;color:#185FA5;'; nameSpan.textContent=name;
+  var cntSpan=document.createElement('span'); cntSpan.style.cssText='font-size:11px;color:var(--tx3);margin-left:6px;'; cntSpan.textContent='['+items.length+']';
+  nameEl.appendChild(nameSpan); nameEl.appendChild(cntSpan);
+
+  var metaEl=document.createElement('div');
+  metaEl.style.cssText='font-size:11px;color:var(--tx2);display:flex;gap:10px;flex-wrap:wrap;';
+  metaEl.innerHTML=
+    (up?'<span style="color:var(--amber)">'+up+' unplanned</span>':'')+
+    (ns?'<span style="color:var(--tx2)">'+ns+' not started</span>':'')+
+    (ot?'<span style="color:var(--green)">'+ot+' on track</span>':'')+
+    (ar?'<span style="color:var(--red)">'+ar+' at risk</span>':'')+
+    (dn?'<span style="color:var(--blue)">'+dn+' done</span>':'');
+
+  hdr.appendChild(chevEl); hdr.appendChild(nameEl); hdr.appendChild(metaEl);
+  wrap.appendChild(hdr);
+
+  if(isCollapsed) return wrap;
+
+  // Group items by rock
+  var rockGroups={};
+  var rockOrder=[];
+  items.forEach(function(item){
+    var rid=item.rock.id;
+    if(!rockGroups[rid]){ rockGroups[rid]={rock:item.rock,type:item.type,items:[]}; rockOrder.push(rid); }
+    rockGroups[rid].items.push(item);
+  });
+
+  var bodyWrap=document.createElement('div');
+  bodyWrap.style.cssText='background:var(--surf);border:1px solid var(--bdr);border-top:none;border-radius:0 0 var(--r) var(--r);overflow:hidden;';
+
+  // Rock key for collapse state: person+rockid
+  if(!D.indRockCollapsed) D.indRockCollapsed={};
+
+  rockOrder.forEach(function(rid, rIdx){
+    var group=rockGroups[rid];
+    var rock=group.rock;
+    var type=group.type;
+    var rockItems=group.items;
+    var rockKey=name+'|'+rid;
+    var rockCollapsed=D.indRockCollapsed[rockKey]||false;
+
+    // Rock sub-header
+    var rockHdr=document.createElement('div');
+    rockHdr.style.cssText='display:flex;align-items:center;gap:8px;padding:7px 14px 7px 24px;background:var(--surf2);border-top:'+(rIdx>0?'1px solid var(--bdr)':'1px solid #C5D4E8')+';cursor:pointer;user-select:none;';
+    rockHdr.addEventListener('click',function(){
+      if(!D.indRockCollapsed) D.indRockCollapsed={};
+      D.indRockCollapsed[rockKey]=!D.indRockCollapsed[rockKey];
+      save(); renderDashInd();
+    });
+
+    var rChev=document.createElement('span');
+    rChev.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="transition:transform .2s;transform:rotate('+(rockCollapsed?'-90deg':'0deg')+')"><polyline points="6 9 12 15 18 9"/></svg>';
+    rChev.style.cssText='display:flex;align-items:center;color:var(--tx3);flex-shrink:0;margin-left:6px;';
+
+    var rTitle=document.createElement('span'); rTitle.style.cssText='font-size:12px;font-weight:500;color:var(--tx);flex:1;'; rTitle.textContent=rock.title;
+    var rCnt=document.createElement('span'); rCnt.style.cssText='font-size:11px;color:var(--tx3);'; rCnt.textContent=rockItems.length+' sub-rocks';
+
+    // Rock mini stats
+    var rOt=rockItems.filter(function(i){return i.sub.status==='On Track';}).length;
+    var rAr=rockItems.filter(function(i){return i.sub.status==='At Risk';}).length;
+    var rDn=rockItems.filter(function(i){return i.sub.status==='Done';}).length;
+    var rUp=rockItems.filter(function(i){return !i.sub.targetDate;}).length;
+    var rMeta=document.createElement('span'); rMeta.style.cssText='font-size:11px;display:flex;gap:8px;';
+    rMeta.innerHTML=
+      (rUp?'<span style="color:var(--amber)">'+rUp+' unplanned</span>':'')+
+      (rOt?'<span style="color:var(--green)">'+rOt+' on track</span>':'')+
+      (rAr?'<span style="color:var(--red)">'+rAr+' at risk</span>':'')+
+      (rDn?'<span style="color:var(--blue)">'+rDn+' done</span>':'');
+
+    rockHdr.appendChild(rChev); rockHdr.appendChild(rTitle); rockHdr.appendChild(rCnt); rockHdr.appendChild(rMeta);
+    bodyWrap.appendChild(rockHdr);
+
+    if(rockCollapsed) return;
+
+    // Table for this rock's sub-rocks
+    var tableWrap=document.createElement('div');
+    tableWrap.style.cssText='overflow-x:auto;border-top:1px solid var(--bdr);';
+    var tbl=document.createElement('table'); tbl.className='ms-table';
+
+    var thead=document.createElement('thead');
+    var hr=document.createElement('tr');
+    [['Sub-Rock','min-width:160px;position:sticky;left:0;background:var(--surf2);'],
+     ['Target','width:90px;text-align:center'],
+     ['Conclusion','width:100px;text-align:center'],
+     ['Status','width:100px']].forEach(function(p){
+      var th=document.createElement('th'); th.style.cssText=p[1]; th.textContent=p[0]; hr.appendChild(th);
+    });
+    WEEK_DATES.forEach(function(w,wi){
+      var th=document.createElement('th'); var isCurr=wi===currentWeekIdx;
+      th.style.cssText='width:48px;text-align:center;font-size:10px;'+(isCurr?'background:rgba(24,95,165,0.07);border-top:2px solid var(--blue);':'');
+      th.innerHTML=isCurr?'<span style="font-weight:600;color:var(--blue)">'+w+'</span><span style="display:block;font-size:9px;color:var(--blue);opacity:.7">now</span>':w;
+      hr.appendChild(th);
+    });
+    var thDel=document.createElement('th'); thDel.style.cssText='width:32px;'; hr.appendChild(thDel);
+    thead.appendChild(hr); tbl.appendChild(thead);
+
+    var tbody=document.createElement('tbody');
+    rockItems.forEach(function(item){
+      var sub=item.sub;
+      var targetIdx=dateToWkIdx(parseISO(sub.targetDate));
+      var doneIdx=sub.doneDate?dateToWkIdx(parseISO(sub.doneDate)):-1;
+
+      var tr=document.createElement('tr'); tr.style.verticalAlign='top';
+      if(!sub.targetDate) tr.style.background='rgba(163,45,45,0.04)';
+
+      // Editable title
+      var tdTitle=document.createElement('td');
+      tdTitle.style.cssText='position:sticky;left:0;background:'+(sub.targetDate?'var(--surf)':'rgba(255,245,245,1)')+';font-size:12px;font-weight:500;word-break:break-word;line-height:1.4;min-width:160px;';
+      var titleEl=document.createElement('div'); titleEl.className='ed'; titleEl.style.fontWeight='500'; titleEl.contentEditable='true'; titleEl.textContent=sub.title||'';
+      titleEl.addEventListener('blur',function(){ sub.title=this.textContent.trim(); save(); ROCK_TYPES.forEach(function(t){renderRocks(t);}); });
+      titleEl.addEventListener('keydown',function(e){ if(e.key==='Enter'){e.preventDefault();this.blur();} });
+      tdTitle.appendChild(titleEl);
+
+      // Target date
+      var tdTarget=document.createElement('td'); tdTarget.style.cssText='text-align:center;vertical-align:middle;';
+      var targetInp=document.createElement('input'); targetInp.type='date'; targetInp.className='ctrl'; targetInp.style.cssText='font-size:11px;width:100%;min-width:90px;'; targetInp.value=sub.targetDate||'';
+      targetInp.addEventListener('change',function(){ sub.targetDate=this.value; save(); renderDashInd(); ROCK_TYPES.forEach(function(t){renderRocks(t);}); });
+      tdTarget.appendChild(targetInp);
+
+      // Conclusion date
+      var tdDone=document.createElement('td'); tdDone.style.cssText='text-align:center;vertical-align:middle;';
+      var doneInp=document.createElement('input'); doneInp.type='date'; doneInp.className='ctrl'; doneInp.style.cssText='font-size:11px;width:100%;min-width:90px;'; doneInp.value=sub.doneDate||'';
+      doneInp.addEventListener('change',function(){ sub.doneDate=this.value; if(this.value) sub.status='Done'; save(); renderDashInd(); ROCK_TYPES.forEach(function(t){renderRocks(t);}); });
+      tdDone.appendChild(doneInp);
+
+      // Status
+      var tdStatus=document.createElement('td'); tdStatus.style.cssText='vertical-align:middle;';
+      var stSel=document.createElement('select'); stSel.className='ctrl'; stSel.style.cssText='font-size:11px;width:100%;';
+      if(!sub.targetDate){ var upOpt=document.createElement('option'); upOpt.value='Unplanned'; upOpt.textContent='Unplanned'; upOpt.selected=true; stSel.appendChild(upOpt); }
+      STATUSES.forEach(function(s){ var o=document.createElement('option'); o.textContent=s; if(sub.targetDate&&sub.status===s) o.selected=true; stSel.appendChild(o); });
+      stSel.addEventListener('change',function(){ sub.status=this.value==='Unplanned'?'Not Started':this.value; save(); renderDashInd(); ROCK_TYPES.forEach(function(t){renderRocks(t);}); });
+      tdStatus.appendChild(stSel);
+
+      tr.appendChild(tdTitle); tr.appendChild(tdTarget); tr.appendChild(tdDone); tr.appendChild(tdStatus);
+
+      // Week dots
+      WEEK_DATES.forEach(function(w,wi){
+        var td=document.createElement('td'); var isCurr=wi===currentWeekIdx;
+        td.style.cssText='text-align:center;padding:6px 3px;'+(isCurr?'background:rgba(24,95,165,0.07);':'');
+        var isTarget=wi===targetIdx; var isDone=wi===doneIdx; var isPast=doneIdx>=0&&wi<doneIdx;
+        var dot=document.createElement('button');
+        dot.style.cssText='width:16px;height:16px;border-radius:50%;border:none;cursor:pointer;display:inline-block;transition:transform .1s;outline:none;';
+        if(isDone){dot.style.background='var(--green)';dot.title='Done';}
+        else if(isPast){dot.style.background='var(--green-bg)';dot.style.border='1.5px solid var(--green)';}
+        else if(isTarget){dot.style.background='var(--red-bg)';dot.style.border='2px solid var(--red)';dot.title='Target: '+w+' — right-click or Shift+click to move';}
+        else{dot.style.background='var(--surf3)';dot.style.border='1.5px solid var(--bdr2)';dot.title='Click to mark done · Shift+click or right-click to set as target';}
+        dot.addEventListener('mouseenter',function(){this.style.transform='scale(1.25)';});
+        dot.addEventListener('mouseleave',function(){this.style.transform='scale(1)';});
+        dot.addEventListener('click',function(e){
+          if(e.shiftKey){
+            var wd=parseWD(WEEK_DATES[wi]); if(wd){var mm=String(wd.getMonth()+1).padStart(2,'0');var dd=String(wd.getDate()).padStart(2,'0');sub.targetDate=wd.getFullYear()+'-'+mm+'-'+dd;}
+            save(); renderDashInd(); ROCK_TYPES.forEach(function(t){renderRocks(t);}); return;
+          }
+          if(isDone&&doneIdx===wi){sub.doneDate='';sub.status='On Track';}
+          else{var wd=parseWD(WEEK_DATES[wi]);if(wd){var mm=String(wd.getMonth()+1).padStart(2,'0');var dd=String(wd.getDate()).padStart(2,'0');sub.doneDate=wd.getFullYear()+'-'+mm+'-'+dd;}sub.status='Done';}
+          save(); renderDashInd(); ROCK_TYPES.forEach(function(t){renderRocks(t);});
+        });
+        dot.addEventListener('contextmenu',function(e){
+          e.preventDefault();
+          var wd=parseWD(WEEK_DATES[wi]);if(wd){var mm=String(wd.getMonth()+1).padStart(2,'0');var dd=String(wd.getDate()).padStart(2,'0');sub.targetDate=wd.getFullYear()+'-'+mm+'-'+dd;}
+          save(); renderDashInd(); ROCK_TYPES.forEach(function(t){renderRocks(t);});
+        });
+        td.appendChild(dot); tr.appendChild(td);
+      });
+
+      // Delete
+      var tdDel=document.createElement('td'); tdDel.style.cssText='text-align:center;vertical-align:middle;';
+      var delBtn=document.createElement('button'); delBtn.className='btn-del'; delBtn.innerHTML='&#10005;';
+      delBtn.addEventListener('click',function(){
+        confirmDelete('Delete Sub-Rock?','This will permanently delete "'+sub.title+'". This cannot be undone.',function(){
+          var rock2=findRock(type,rock.id);
+          if(rock2){ rock2.subrocks=rock2.subrocks.filter(function(s){return s.id!==sub.id;}); }
+          save(); renderDashInd(); ROCK_TYPES.forEach(function(t){renderRocks(t);});
+        });
+      });
+      tdDel.appendChild(delBtn); tr.appendChild(tdDel);
+      tbody.appendChild(tr);
+    });
+
+    // Add sub-rock row
+    var addRow=document.createElement('tr');
+    var tdAdd=document.createElement('td'); tdAdd.colSpan=5+WEEK_DATES.length;
+    tdAdd.style.cssText='padding:8px 10px;border-top:1px solid var(--bdr);';
+    var addWrap=document.createElement('div'); addWrap.style.cssText='display:flex;gap:8px;align-items:center;';
+    var tInp=document.createElement('input'); tInp.type='text'; tInp.placeholder='New sub-rock title';
+    tInp.style.cssText='flex:1;font-size:12px;padding:5px 8px;border:1px solid var(--bdr);border-radius:var(--r);background:var(--surf);color:var(--tx);font-family:var(--font);';
+    var addBtn=document.createElement('button'); addBtn.className='btn btn-ghost'; addBtn.style.fontSize='12px'; addBtn.textContent='+ Add';
+    addBtn.addEventListener('click',function(){
+      if(!tInp.value.trim()) return;
+      var rock2=findRock(type,rock.id); if(!rock2) return;
+      rock2.subrocks.push({id:uid(),title:tInp.value.trim(),kr:'',owner:name,dept:'',portco:'',score:'',targetDate:'',doneDate:'',status:'Not Started',milestones:Array(12).fill(''),msNotes:Array(12).fill('')});
+      tInp.value='';
+      save(); renderDashInd(); ROCK_TYPES.forEach(function(t){renderRocks(t);});
+    });
+    addWrap.appendChild(tInp); addWrap.appendChild(addBtn);
+    tdAdd.appendChild(addWrap); addRow.appendChild(tdAdd);
+    tbody.appendChild(addRow);
+
+    tbl.appendChild(tbody); tableWrap.appendChild(tbl); bodyWrap.appendChild(tableWrap);
+  });
+
+  wrap.appendChild(bodyWrap);
+  return wrap;
+}
+
+function renderBetter() {
+  var cb=document.getElementById('better-count');
+  if(cb){ var impl=D.better.filter(function(b){return b.status==='Implemented';}).length; var inp=D.better.filter(function(b){return b.status==='In Progress';}).length; var sug=D.better.filter(function(b){return b.status==='Suggested';}).length; cb.innerHTML='<strong>'+impl+'</strong> implemented · <strong>'+inp+'</strong> in progress · <strong>'+sug+'</strong> suggested'; }
+  var body=document.getElementById('better-body'); if(!body) return;
+  var lc={High:'impact-h',Medium:'impact-m',Low:'impact-l',Critical:'impact-c'};
+  if(!D.better.length){ body.innerHTML='<tr><td colspan="7" class="empty" style="padding:24px">No ideas logged yet</td></tr>'; return; }
+  body.innerHTML=''; D.better.forEach(function(b,i){ var tr=document.createElement('tr');
+    tr.innerHTML='<td style="font-weight:500">'+esc(b.area)+'</td><td>'+esc(b.what)+'</td><td style="color:var(--tx2)">'+esc(b.impact)+'</td><td><span class="pill '+(lc[b.level]||'impact-l')+'">'+esc(b.level)+'</span></td><td style="color:var(--tx2)">'+esc(b.who)+'</td><td></td><td></td>';
+    var sel=document.createElement('select'); sel.className='ctrl'; sel.style.cssText='font-size:11px;width:100%';
+    ['Suggested','In Progress','Implemented'].forEach(function(s){ var o=document.createElement('option'); o.textContent=s; if(b.status===s) o.selected=true; sel.appendChild(o); });
+    sel.addEventListener('change',function(){ D.better[i].status=this.value; save(); renderBetter(); });
+    tr.cells[5].appendChild(sel);
+    var btn=document.createElement('button'); btn.className='btn-del'; btn.innerHTML='&#10005;'; btn.addEventListener('click',function(){ D.better.splice(i,1); save(); renderBetter(); }); tr.cells[6].appendChild(btn);
+    body.appendChild(tr);
+  });
+}
+function addBetter(){
+  var a=document.getElementById('b-area').value.trim(); var w=document.getElementById('b-what').value.trim(); if(!a||!w) return;
+  D.better.push({area:a,who:document.getElementById('b-who').value.trim(),what:w,impact:document.getElementById('b-impact').value.trim(),level:document.getElementById('b-level').value,status:document.getElementById('b-status').value});
+  ['b-area','b-who','b-what','b-impact'].forEach(function(id){document.getElementById(id).value='';});
+  save(); renderBetter();
+}
+
+// ── Blockers ───────────────────────────────────────────────────────────────
+function renderBlockers() {
+  var body=document.getElementById('blockers-body'); if(!body) return;
+  if(!D.blockers.length){ body.innerHTML='<tr><td colspan="7" class="empty" style="padding:24px">No blockers — clear skies</td></tr>'; return; }
+  body.innerHTML=''; D.blockers.forEach(function(b,i){ var tr=document.createElement('tr');
+    tr.innerHTML='<td style="font-weight:500">'+esc(b.rock)+'</td><td>'+esc(b.desc)+'</td><td>'+esc(b.support)+'</td><td style="color:var(--tx2)">'+esc(b.from)+'</td><td style="color:var(--tx2)">'+esc(b.who)+'</td><td></td><td></td>';
+    var sel=document.createElement('select'); sel.className='ctrl'; sel.style.cssText='font-size:11px;width:100%';
+    ['Blocked','In Progress','Resolved'].forEach(function(s){ var o=document.createElement('option'); o.textContent=s; if(b.status===s) o.selected=true; sel.appendChild(o); });
+    sel.addEventListener('change',function(){ D.blockers[i].status=this.value; save(); renderBlockers(); });
+    tr.cells[5].appendChild(sel);
+    var btn=document.createElement('button'); btn.className='btn-del'; btn.innerHTML='&#10005;'; btn.addEventListener('click',function(){ D.blockers.splice(i,1); save(); renderBlockers(); }); tr.cells[6].appendChild(btn);
+    body.appendChild(tr);
+  });
+}
+function addBlocker(){
+  var r=document.getElementById('bl-rock').value.trim(); if(!r) return;
+  D.blockers.push({rock:r,who:document.getElementById('bl-who').value.trim(),desc:document.getElementById('bl-desc').value.trim(),support:document.getElementById('bl-support').value.trim(),from:document.getElementById('bl-from').value.trim(),status:document.getElementById('bl-status').value,notes:document.getElementById('bl-notes').value.trim()});
+  ['bl-rock','bl-who','bl-desc','bl-support','bl-from','bl-notes'].forEach(function(id){document.getElementById(id).value='';});
+  save(); renderBlockers();
+}
+
+// ── Support ────────────────────────────────────────────────────────────────
+function renderSupport() {
+  var body=document.getElementById('support-body'); if(!body) return;
+  var tc={Intro:'st-sug',Decision:'impact-m',Budget:'impact-c',Resource:'impact-h',Other:'impact-l'};
+  if(!D.support.length){ body.innerHTML='<tr><td colspan="8" class="empty" style="padding:24px">No support requests</td></tr>'; return; }
+  body.innerHTML=''; D.support.forEach(function(b,i){ var tr=document.createElement('tr');
+    tr.innerHTML='<td><span class="pill '+(tc[b.type]||'impact-l')+'">'+esc(b.type)+'</span></td><td style="font-weight:500">'+esc(b.init)+'</td><td style="color:var(--tx2)">'+esc(b.desc)+'</td><td style="color:var(--tx2)">'+esc(b.from)+'</td><td style="color:var(--tx2)">'+esc(b.by)+'</td><td style="color:var(--tx2)">'+esc(b.time)+'</td><td></td><td></td>';
+    var sel=document.createElement('select'); sel.className='ctrl'; sel.style.cssText='font-size:11px;width:100%';
+    ['Needed','In Progress','Resolved'].forEach(function(s){ var o=document.createElement('option'); o.textContent=s; if(b.status===s) o.selected=true; sel.appendChild(o); });
+    sel.addEventListener('change',function(){ D.support[i].status=this.value; save(); renderSupport(); });
+    tr.cells[6].appendChild(sel);
+    var btn=document.createElement('button'); btn.className='btn-del'; btn.innerHTML='&#10005;'; btn.addEventListener('click',function(){ D.support.splice(i,1); save(); renderSupport(); }); tr.cells[7].appendChild(btn);
+    body.appendChild(tr);
+  });
+}
+function addSupport(){
+  var init=document.getElementById('sp-init').value.trim(); if(!init) return;
+  D.support.push({type:document.getElementById('sp-type').value,init:init,by:document.getElementById('sp-by').value.trim(),from:document.getElementById('sp-from').value.trim(),desc:document.getElementById('sp-desc').value.trim(),time:document.getElementById('sp-time').value.trim(),status:document.getElementById('sp-status').value});
+  ['sp-init','sp-by','sp-from','sp-desc','sp-time'].forEach(function(id){document.getElementById(id).value='';});
+  save(); renderSupport();
+}
+
+// ── Settings ───────────────────────────────────────────────────────────────
+function openModal(){ document.getElementById('set-q').value=D.quarter; document.getElementById('modal').classList.add('open'); }
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+function saveSettings(){ D.quarter=document.getElementById('set-q').value.trim()||D.quarter; document.getElementById('sb-quarter').textContent=D.quarter; save(); closeModal(); }
+
+// ── Boot ───────────────────────────────────────────────────────────────────
+function bootApp() {
+  if(!D.quarter) D.quarter=currentQ();
+  document.getElementById('sb-quarter').textContent=D.quarter;
+  renderNS();
+}
+
+
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('modal').addEventListener('click',function(e){if(e.target===this) closeModal();});
+  document.getElementById('confirm-modal').addEventListener('click',function(e){if(e.target===this) confirmCancel();});
+  load();
+});
+
+
+// ── Confirm dialog ─────────────────────────────────────────────────────────
+var _confirmCallback = null;
+
+function confirmDelete(title, msg, callback) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent = msg;
+  _confirmCallback = callback;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+function confirmOK() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  if(_confirmCallback) { _confirmCallback(); _confirmCallback=null; }
+}
+function confirmCancel() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  _confirmCallback = null;
+}
+document.addEventListener('DOMContentLoaded', function() {
+});
+</script>
+
+<div class="modal-bg" id="confirm-modal">
+  <div class="modal" style="width:360px">
+    <h3 id="confirm-title">Delete Rock?</h3>
+    <p id="confirm-msg" style="font-size:13px;color:var(--tx2);margin-bottom:0;line-height:1.6"></p>
+    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:20px">
+      <button class="btn btn-ghost" onclick="confirmCancel()">Cancel</button>
+      <button class="btn" id="confirm-ok-btn" style="background:var(--red);color:#fff;border-color:var(--red)" onclick="confirmOK()">Delete</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
